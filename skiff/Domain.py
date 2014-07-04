@@ -13,6 +13,9 @@ class SkiffDomainRecord(object):
         self.__dict__.update(options)
         self.domain = domain
 
+    def __repr__(self):
+        return '<' + self.type + ' (#' + str(self.id) + ') ' + self.name + ' -> ' + self.data + '>'
+
     def delete(self):
         return delete_record(self.id)
 
@@ -32,6 +35,9 @@ class SkiffDomain(object):
         self.__dict__.update(options)
         self.record = self.get_record
         self.create = self.create_record
+
+    def __repr__(self):
+        return '<' + self.domain + '>'
 
     def delete(self):
         return delete_domain(self.name)

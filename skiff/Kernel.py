@@ -8,3 +8,6 @@ class SkiffKernel(object):
             options = kwargs
 
         self.__dict__.update(options)
+
+    def __repr__(self):
+        return '<' + self.name + ' (#' + str(self.id) + ') ' + self.version + '>'

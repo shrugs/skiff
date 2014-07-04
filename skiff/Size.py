@@ -11,6 +11,9 @@ class SkiffSize(object):
 
         self.__dict__.update(options)
 
+    def __repr__(self):
+        return '<' + self.slug + '>'
+
 
 def all():
     r = requests.get(DO_BASE_URL + '/sizes', headers=DO_HEADERS)

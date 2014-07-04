@@ -8,3 +8,6 @@ class SkiffNetwork(object):
             options = kwargs
 
         self.__dict__.update(options)
+
+    def __repr__(self):
+        return '<' + self.ip_address + ' - ' + self.type + '>'

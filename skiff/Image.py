@@ -12,6 +12,9 @@ class SkiffImage(object):
 
         self.__dict__.update(options)
 
+    def __repr__(self):
+        return '<' + self.name + ' (#' + str(self.id) + ') ' + self.distribution + ((' - ' + self.slug) if self.slug) + '>'
+
     def delete(self):
         r = requests.delete(DO_BASE_URL + "/images/" + str(self.id), headers=DO_DELETE_HEADERS)
         return r.status_code == 204

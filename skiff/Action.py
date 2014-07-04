@@ -11,6 +11,9 @@ class SkiffAction(object):
 
         self.__dict__.update(options)
 
+    def __repr__(self):
+        return '<' + self.type + ' (#' + str(self.id) + ') ' + self.status + '>'
+
 
 def all():
     r = requests.get(DO_BASE_URL + '/actions', headers=DO_HEADERS)

@@ -11,6 +11,9 @@ class SkiffKey(object):
 
         self.__dict__.update(options)
 
+    def __repr__(self):
+        return '<' + self.name + ' (#' + self.id + ')>'
+
     def update(self, new_name):
         r = requests.put(DO_BASE_URL + '/account/keys/' + sr(self.id), data=json.dumps(options), headers=DO_HEADERS)
         r = r.json()

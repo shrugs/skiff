@@ -11,6 +11,9 @@ class SkiffRegion(object):
 
         self.__dict__.update(options)
 
+    def __repr__(self):
+        return '<' + self.name + ' (' + self.slug + ')>'
+
 
 def all():
     r = requests.get(DO_BASE_URL + '/regions', headers=DO_HEADERS)

@@ -35,7 +35,7 @@ class SkiffDroplet(object):
         self.reset_password = self.password_reset
 
     def __repr__(self):
-        return self.name + ' (#' + str(self.id) + ') ' + self.region.slug + ' - ' + self.image.name + ' - ' + self.size.slug
+        return '<' + self.name + ' (#' + str(self.id) + ') ' + self.region.slug + ' - ' + self.image.name + ' - ' + self.size.slug + '>'
 
     def do_action(self, action, options=None):
         if not options:
