@@ -18,8 +18,16 @@ def all():
     return [SkiffDomain(a) for a in r["domains"]]
 
 
-def create():
-    pass
+def create(options=None, **kwargs):
+    if not options:
+        options = kwargs
+
+    r = requests.post(DO_BASE_URL + '/domains', data=options, headers=DO_HEADERS)
+    r = r.json()
+    if "message" in r:
+        raise ValueError(r["message"])
+    else:
+        return SkiffDomain(r["domain"])
 
 
 def get(aid):
