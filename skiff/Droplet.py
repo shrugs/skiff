@@ -135,7 +135,4 @@ def all():
         raise ValueError(r['message'])
     else:
         # create new Droplets for each droplet
-        droplets = []
-        for d in r['droplets']:
-            droplets.append(SkiffDroplet(d))
-        return droplets
+        return [SkiffDroplet(d) for d in r["droplets"]]
