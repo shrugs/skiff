@@ -13,6 +13,10 @@ class SkiffDroplet(object):
         # possibly mutate dicts into Skiff Objects for things like
         # droplet snapshots, backups, actions, networks
 
+        # aliases
+        self.restart = self.reboot
+        self.action = self.get_action
+
     def do_action(self, action, options):
         options["type"] = action
         r = requests.post(DO_BASE_URL + '/droplets/' + str(self.id) + '/actions', data=options, headers=DO_HEADERS)
@@ -49,10 +53,6 @@ class SkiffDroplet(object):
 
     def power_cycle(self):
         return self.do_action('power_cycle')
-
-    def restart(self):
-        # alias for reboot
-        self.reboot()
 
     def shutdown(self):
         return self.do_action('shutdown')
@@ -102,10 +102,6 @@ class SkiffDroplet(object):
         else:
             return SkiffAction(r["action"])
 
-    def action(self, action_id):
-        # alias for get_action
-        return self.get_action(action_id)
-
 
 def get(did):
     if type(did).__name__ == 'int':
@@ -125,6 +121,10 @@ def create(options=None, **kwargs):
 
     r = requests.post(DO_BASE_URL + '/droplets', data=json.dumps(options), headers=DO_HEADERS)
     return SkiffDroplet(r.json()["droplet"])
+
+
+# alias new to create
+new = create
 
 
 def all():
