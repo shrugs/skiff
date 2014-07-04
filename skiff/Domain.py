@@ -11,6 +11,10 @@ class SkiffDomain(object):
 
         self.__dict__.update(options)
 
+    def delete(self):
+        r = requests.delete(DO_BASE_URL + "/domains/" + str(self.id), headers=DO_DELETE_HEADERS)
+        return r.status_code == 204
+
 
 def all():
     r = requests.get(DO_BASE_URL + '/domains', headers=DO_HEADERS)
@@ -30,7 +34,7 @@ def create(options=None, **kwargs):
         return SkiffDomain(r["domain"])
 
 
-def get(aid):
-    r = requests.get(DO_BASE_URL + '/domains/' + str(aid), headers=DO_HEADERS)
+def get(domain):
+    r = requests.get(DO_BASE_URL + '/domains/' + str(domain), headers=DO_HEADERS)
     r = r.json()
     return SkiffDomain(r["domain"])
