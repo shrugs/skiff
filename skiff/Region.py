@@ -19,4 +19,4 @@ def all():
 
 
 def get(domain):
-    return all()['domain']
+    return all()[domain]
