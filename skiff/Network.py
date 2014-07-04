@@ -1,9 +1,9 @@
 
 
-class SkiffAction(object):
-    """SkiffAction"""
+class SkiffNetwork(object):
+    """SkiffNetwork"""
     def __init__(self, options=None, **kwargs):
-        super(SkiffAction, self).__init__()
+        super(SkiffNetwork, self).__init__()
         if not options:
             options = kwargs
 
