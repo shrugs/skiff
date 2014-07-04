@@ -102,6 +102,10 @@ class SkiffDroplet(object):
         else:
             return SkiffAction(r["action"])
 
+    def action(self, action_id):
+        # alias for get_action
+        return self.get_action(action_id)
+
 
 def get(did):
     if type(did).__name__ == 'int':
