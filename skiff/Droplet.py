@@ -82,7 +82,9 @@ class SkiffDroplet(object):
         return self.do_action('rebuild', {'image': image_id})
 
     def rename(self, new_name):
-        return self.do_action('rename', {'name': new_name})
+        r = self.do_action('rename', {'name': new_name})
+        self.name = new_name
+        return r
 
     def change_kernel(self, kernel_id):
         # @TODO: if kernel is of class SkiffKernel, grab its property
@@ -106,12 +108,24 @@ class SkiffDroplet(object):
         else:
             return SkiffAction(r["action"])
 
+    # UTILITY METHODS
+    def has_action_in_progress(self):
+        for action in self.actions():
+            if action.status is 'in-progress':
+                return True
+
+        return False
+
 
 def get(did):
     if type(did).__name__ == 'int':
         # is droplet id, get it
         r = requests.get(DO_BASE_URL + '/droplets/' + str(did), headers=DO_HEADERS)
-        return SkiffDroplet(r.json())
+        r = r.json()
+        if 'message' in r:
+            raise ValueError(r['message'])
+        else:
+            return SkiffDroplet(r['droplet'])
     elif type(did).__name__ == 'str':
         # is droplet name, fuzzy search
         print did
