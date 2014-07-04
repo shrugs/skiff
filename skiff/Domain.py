@@ -1,5 +1,10 @@
 import requests
-from .utils import DO_BASE_URL, DO_HEADERS
+from .utils import DO_BASE_URL, DO_HEADERS, DO_DELETE_HEADERS
+
+
+def delete_domain(did):
+    r = requests.delete(DO_BASE_URL + "/domains/" + str(did), headers=DO_DELETE_HEADERS)
+    return r.status_code == 204
 
 
 class SkiffDomain(object):
@@ -12,8 +17,7 @@ class SkiffDomain(object):
         self.__dict__.update(options)
 
     def delete(self):
-        r = requests.delete(DO_BASE_URL + "/domains/" + str(self.id), headers=DO_DELETE_HEADERS)
-        return r.status_code == 204
+        return delete_domain(self.name)
 
 
 def all():

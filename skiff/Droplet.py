@@ -4,6 +4,11 @@ from .utils import DO_BASE_URL, DO_HEADERS, DO_DELETE_HEADERS
 from.Action import SkiffAction
 
 
+def destroy_droplet(did):
+    r = requests.delete(DO_BASE_URL + "/droplets/" + str(did), headers=DO_DELETE_HEADERS)
+    return r.status_code == 204
+
+
 class SkiffDroplet(object):
     """SkiffDroplet"""
     def __init__(self, options):
@@ -27,8 +32,7 @@ class SkiffDroplet(object):
             return SkiffAction(r["action"])
 
     def destroy(self):
-        r = requests.delete(DO_BASE_URL + "/droplets/" + str(self.id), headers=DO_DELETE_HEADERS)
-        return r.status_code == 204
+        return destroy_droplet(self.id)
 
     def snapshots(self):
         r = requests.get(DO_BASE_URL + '/droplets/' + str(self.id) + '/snapshots', headers=DO_HEADERS)
