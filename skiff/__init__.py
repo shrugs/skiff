@@ -10,5 +10,5 @@
 
 from .version import __version__
 # from . import (Action, Domain, Droplet, Image, Kernel, Key, Region, Size, Snapshot)
-from . import Droplet, Action, Domain, Image, Kernel, Key, Network, Region, Size, Snapshot
+from . import Droplet, Action, Domain, DomainRecord, Image, Kernel, Key, Network, Region, Size, Snapshot
 from .utils import token
