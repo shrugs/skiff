@@ -18,5 +18,5 @@ def all():
     return [SkiffRegion(a) for a in r["regions"]]
 
 
-def get(domain):
-    return all()[domain]
+def get(region):
+    return all()[region]

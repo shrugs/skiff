@@ -36,7 +36,7 @@ class SkiffDroplet(object):
 
     def snapshots(self):
         r = requests.get(DO_BASE_URL + '/droplets/' + str(self.id) + '/snapshots', headers=DO_HEADERS)
-        # @TODO: for each snapshot, create a SkiffSnapshot and return
+        # @TODO: for each snapshot, create a SkiffImage and return
         return r.json()
 
     def backups(self):
