@@ -1,7 +1,11 @@
 import requests
 import json
 from .utils import DO_BASE_URL, DO_HEADERS, DO_DELETE_HEADERS
-from.Action import SkiffAction
+from .Action import SkiffAction
+from .Image import SkiffImage
+from .Size import SkiffSize
+from .Kernel import SkiffKernel
+from .Region import SkiffRegion
 
 
 def destroy_droplet(did):
@@ -15,14 +19,25 @@ class SkiffDroplet(object):
         super(SkiffDroplet, self).__init__()
         # create instance methods for everything in options
         self.__dict__.update(options)
-        # possibly mutate dicts into Skiff Objects for things like
+        # @TODO: mutate dicts into SkiffObjects for things like
         # droplet snapshots, backups, actions, networks
+        self.region = SkiffRegion(options['region'])
+        self.image = SkiffImage(options['image'])
+        self.size = SkiffSize(options['size'])
+        self.kernel = SkiffKernel(options['kernel'])
 
         # aliases
         self.restart = self.reboot
         self.action = self.get_action
+        self.reset_password = self.password_reset
 
-    def do_action(self, action, options):
+    def do_action(self, action, options=None):
+        if not options:
+            options = {}
+
+        if isinstance(action, SkiffAction):
+            action = action.type
+
         options["type"] = action
         r = requests.post(DO_BASE_URL + '/droplets/' + str(self.id) + '/actions', data=json.dumps(options), headers=DO_HEADERS)
         r = r.json()
@@ -36,21 +51,39 @@ class SkiffDroplet(object):
 
     def snapshots(self):
         r = requests.get(DO_BASE_URL + '/droplets/' + str(self.id) + '/snapshots', headers=DO_HEADERS)
-        # @TODO: for each snapshot, create a SkiffImage and return
-        return r.json()
+        # for each snapshot, create a SkiffImage and return
+        r = r.json()
+        if 'message' in r:
+            raise ValueError(r['message'])
+        else:
+            return [SkiffImage(a) for a in r['snapshots']]
 
     def backups(self):
         r = requests.get(DO_BASE_URL + '/droplets/' + str(self.id) + '/backups', headers=DO_HEADERS)
-        # @TODO: for each snapshot, create a SkiffBackup and return
-        return r.json()
+        # for each backup, create a SkiffImage and return
+        r = r.json()
+        if 'message' in r:
+            raise ValueError(r['message'])
+        else:
+            return [SkiffImage(a) for a in r['backups']]
 
     def actions(self):
         r = requests.get(DO_BASE_URL + '/droplets/' + str(self.id) + '/actions', headers=DO_HEADERS)
-        # @TODO: for each snapshot, create a SkiffAction and return
-        return r.json()
+        # for each action, create a SkiffAction and return
+        r = r.json()
+        if 'message' in r:
+            raise ValueError(r['message'])
+        else:
+            return [SkiffAction(a) for a in r['actions']]
 
     def kernels(self):
         r = requests.get(DO_BASE_URL + '/droplets/' + str(self.id) + '/kernels', headers=DO_HEADERS)
+        # for each kernel, create a SkiffKernel and return
+        r = r.json()
+        if 'message' in r:
+            raise ValueError(r['message'])
+        else:
+            return [SkiffKernel(a) for a in r['kernels']]
 
     def reboot(self):
         return self.do_action('reboot')
@@ -67,33 +100,43 @@ class SkiffDroplet(object):
     def power_on(self):
         return self.do_action('power_on')
 
-    def reset_password(self):
-        return self.do_action('reset_password')
+    def password_reset(self):
+        return self.do_action('password_reset')
 
     def resize(self, slug):
-        # @TODO: if is of class SkiffSize, grab its property
+        # if is of class SkiffSize, grab its property
+        if isinstance(slug, SkiffSize):
+            slug = slug.slug
         return self.do_action('resize', {'size': slug})
 
-    def restore(self, image_id):
-        # @TODO: if is of class SkiffImage, grab its property
-        return self.do_action('resize', {'image': image_id})
+    def restore(self, backup):
+        # if is of class SkiffImage, grab its property
+        if isinstance(backup, SkiffImage):
+            backup = backup.id
+        return self.do_action('resize', {'image': backup})
 
-    def rebuild(self, image_id=None):
-        return self.do_action('rebuild', {'image': image_id})
+    def rebuild(self, image=None):
+        # if is of class SkiffImage, grab its property
+        if image and isinstance(image, SkiffImage):
+            image = image.id
+        elif not image:
+            image = self.image.id
+        return self.do_action('rebuild', {'image': image})
 
     def rename(self, new_name):
         r = self.do_action('rename', {'name': new_name})
         self.name = new_name
         return r
 
-    def change_kernel(self, kernel_id):
-        # @TODO: if kernel is of class SkiffKernel, grab its property
-        return self.do_action('change_kernel', {'kernel': kernel_id})
+    def change_kernel(self, kernel):
+        # if kernel is of class SkiffKernel, grab its property
+        if isinstance(kernel, SkiffKernel):
+            kernel = kernel.id
+        return self.do_action('change_kernel', {'kernel': kernel})
 
     def enable_ipv6(self):
         return self.do_action('enable_ipv6')
 
-    # def set_backups(self, backup_state):
     def disable_backups(self):
         return self.do_action('disable_backups')
 
@@ -111,7 +154,7 @@ class SkiffDroplet(object):
     # UTILITY METHODS
     def has_action_in_progress(self):
         for action in self.actions():
-            if action.status is 'in-progress':
+            if action.status == 'in-progress':
                 return True
 
         return False
