@@ -34,6 +34,9 @@ class SkiffDroplet(object):
         self.action = self.get_action
         self.reset_password = self.password_reset
 
+    def __repr__(self):
+        return self.name + ' (#' + str(self.id) + ') ' + self.region.slug + ' - ' + self.image.name + ' - ' + self.size.slug
+
     def do_action(self, action, options=None):
         if not options:
             options = {}
@@ -182,6 +185,8 @@ def get(did):
 def create(options=None, **kwargs):
     if not options:
         options = kwargs
+
+    # @TODO: if things in options are of my classes, use those properties
 
     r = requests.post(DO_BASE_URL + '/droplets', data=json.dumps(options), headers=DO_HEADERS)
     return SkiffDroplet(r.json()["droplet"])
