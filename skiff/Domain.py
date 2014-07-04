@@ -1,4 +1,5 @@
 import requests
+import json
 from .utils import DO_BASE_URL, DO_HEADERS, DO_DELETE_HEADERS
 
 
@@ -44,7 +45,7 @@ class SkiffDomain(object):
         if not options:
             options = kwargs
 
-        r = requests.post(DO_BASE_URL + '/domains/' + str(self.name) + '/records', data=options, headers=DO_HEADERS)
+        r = requests.post(DO_BASE_URL + '/domains/' + str(self.name) + '/records', data=json.dumps(options), headers=DO_HEADERS)
         r = r.json()
         if "message" in r:
             raise ValueError(r["message"])
@@ -67,7 +68,7 @@ class SkiffDomain(object):
         options = {
             "name": new_name
         }
-        r = request.put(DO_BASE_URL + '/domains/' + str(self.name) + '/records/' + str(record), data=options, headers=DO_HEADERS)
+        r = request.put(DO_BASE_URL + '/domains/' + str(self.name) + '/records/' + str(record), data=json.dumps(options), headers=DO_HEADERS)
         r = r.json()
         if "message" in r:
             raise ValueError(r["message"])
@@ -85,7 +86,7 @@ def create(options=None, **kwargs):
     if not options:
         options = kwargs
 
-    r = requests.post(DO_BASE_URL + '/domains', data=options, headers=DO_HEADERS)
+    r = requests.post(DO_BASE_URL + '/domains', data=json.dumps(options), headers=DO_HEADERS)
     r = r.json()
     if "message" in r:
         raise ValueError(r["message"])

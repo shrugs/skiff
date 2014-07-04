@@ -24,7 +24,7 @@ class SkiffDroplet(object):
 
     def do_action(self, action, options):
         options["type"] = action
-        r = requests.post(DO_BASE_URL + '/droplets/' + str(self.id) + '/actions', data=options, headers=DO_HEADERS)
+        r = requests.post(DO_BASE_URL + '/droplets/' + str(self.id) + '/actions', data=json.dumps(options), headers=DO_HEADERS)
         r = r.json()
         if "message" in r:
             raise ValueError(r["message"])
