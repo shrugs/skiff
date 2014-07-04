@@ -19,12 +19,12 @@ class SkiffDroplet(object):
         super(SkiffDroplet, self).__init__()
         # create instance methods for everything in options
         self.__dict__.update(options)
-        # @TODO: mutate dicts into SkiffObjects for things like
         # droplet snapshots, backups, actions, networks
         self.region = SkiffRegion(options['region'])
         self.image = SkiffImage(options['image'])
         self.size = SkiffSize(options['size'])
         self.kernel = SkiffKernel(options['kernel'])
+        self.networks = [SkiffNetwork(n) for n in options['networks']]
 
         # aliases
         self.restart = self.reboot
