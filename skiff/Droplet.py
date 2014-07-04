@@ -6,6 +6,7 @@ from .Image import SkiffImage
 from .Size import SkiffSize
 from .Kernel import SkiffKernel
 from .Region import SkiffRegion
+from .Network import SkiffNetwork
 
 
 def destroy_droplet(did):
@@ -20,11 +21,13 @@ class SkiffDroplet(object):
         # create instance methods for everything in options
         self.__dict__.update(options)
         # droplet snapshots, backups, actions, networks
+        # @TODO: make this cleaner?
         self.region = SkiffRegion(options['region'])
         self.image = SkiffImage(options['image'])
         self.size = SkiffSize(options['size'])
         self.kernel = SkiffKernel(options['kernel'])
-        self.networks = [SkiffNetwork(n) for n in options['networks']]
+        for network_type, networks in options['networks'].iteritems():
+                setattr(self, network_type, [SkiffNetwork(n) for n in networks])
 
         # aliases
         self.restart = self.reboot
