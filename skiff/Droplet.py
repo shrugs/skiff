@@ -176,8 +176,12 @@ def get(did):
         else:
             return SkiffDroplet(r['droplet'])
     elif type(did).__name__ == 'str':
-        # is droplet name, fuzzy search
-        print did
+        # is droplet name, search
+        # @TODO: use fuzzy search or something more intelligent
+        ds = all()
+        for d in ds:
+            if did in d.name:
+                return d
     else:
         raise ValueError("Bad Argument")
 
