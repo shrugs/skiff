@@ -175,15 +175,15 @@ def get(did):
             raise ValueError(r['message'])
         else:
             return SkiffDroplet(r['droplet'])
-    elif type(did).__name__ == 'str':
+    else:
         # is droplet name, search
         # @TODO: use fuzzy search or something more intelligent
         ds = all()
         for d in ds:
             if did in d.name:
                 return d
-    else:
-        raise ValueError("Bad Argument")
+
+        raise ValueError("No Suitable Droplet Found for Search: %s" % str(did))
 
 
 def create(options=None, **kwargs):

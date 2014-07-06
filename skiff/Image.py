@@ -42,6 +42,7 @@ def get(iid):
         for img in images:
             if (iid in img.name) or (iid in img.slug):
                 return img
+        raise ValueError('No Suitable Image Found')
 
 
 def all():
