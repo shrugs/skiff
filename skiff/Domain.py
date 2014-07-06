@@ -77,7 +77,9 @@ class SkiffDomain(object):
         return SkiffDomainRecord(self, r["domain_record"])
 
     def update_record(self, record, new_name):
-        # @TODO: if is SkiffRecord, grab that property
+        if isinstance(record, SkiffDomainRecord):
+            record = record.id
+
         options = {
             "name": new_name
         }
