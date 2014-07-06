@@ -55,6 +55,7 @@ Python library for DigitalOcean's v2 API
     install_requires=[
         # add your dependencies here
         # remember to use 'package-name>=x.y.z,<x.y+1.0' notation (this way you get bugfixes)
+        'requests >= 2.3.0, <3.0.0'
     ],
     extras_require={
         'tests': tests_require,

@@ -17,7 +17,7 @@ preggy==1.1.1
 py==1.4.20
 requests==2.3.0
 six==1.7.3
-skiff==0.1.0
+-e git+git@github.com:Shrugs/skiff.git@cff03a2be0d0db6955ca89de8f9667d0fea167d6#egg=skiff-master
 tox==1.7.1
 virtualenv==1.11.6
 wsgiref==0.1.2
