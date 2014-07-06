@@ -90,27 +90,27 @@ Alternatively, simply pass the kernel's ID.
 #### Enable Private Networking
     my_droplet.enable_private_networking()
 
-#### Snapshots
+#### Get Droplet Snapshots
     my_droplet.snapshots()
 
-#### Backups
+#### Get Droplet Backups
     my_droplet.backups()
 
-#### Actions
+#### Get Droplet Actions
     my_droplet.actions()
 
-#### Kernels
+#### Get Droplet Kernels
     my_droplet.kernels()
 
 
 ### Actions
 
-#### All Actions
+#### Get All Actions
 Returns all actions for a token.
 
     skiff.Action.all()
 
-#### Retrieve Action by ID
+#### Get Action by ID
 
     action_id = 28012139
     skiff.Action.get(action_id)
@@ -118,7 +118,7 @@ Returns all actions for a token.
 
 ### Domains
 
-#### All Domains
+#### Get All Domains
     skiff.Domain.all()
     >>> [<blog.cond.in>,
     >>> <matt.cond.in>,
@@ -132,11 +132,13 @@ Returns all actions for a token.
     # or more manually
     my_domain = skiff.Domain.create(name='example.com', ip_address=my_droplet.v4[0].ip_address)
 
-#### Get Domain
+#### Get Specific Domain
     my_domain = skiff.Domain.get('example.com')
     my_domain = skiff.Domain.get(domain_id)
 
 #### Delete/Destroy Domain
+These are aliases for the same method.
+
     my_domain.delete()
     my_domain.destroy()
 
@@ -144,7 +146,7 @@ Returns all actions for a token.
 
 #### Get Domain Records
     my_domain.records()
-    >>>[<example.com - A (#348736) @ -> some.ip.addr.ess>,
+    >>>[<example.com - A (#348736) @ -> 123.456.789.123>,
     >>> <example.com - CNAME (#348740) www -> @>,
     >>> <example.com - NS (#348737)  -> NS1.DIGITALOCEAN.COM.>,
     >>> <example.com - NS (#348738)  -> NS2.DIGITALOCEAN.COM.>,
@@ -160,11 +162,13 @@ See the [DigitalOcean v2 API Docs](https://developers.digitalocean.com/v2/#creat
     my_record = my_domain.get_record(my_record_id)
 
 #### Update Domain Record
-    my_record.update('new_name')
+    my_record = my_record.update('new_name')
 
 See the [DigitalOcean v2 API Docs](https://developers.digitalocean.com/v2/#update-a-domain-record) for information on what `new_name` should be.
 
 #### Delete/Destroy Domain Record
+These are aliases for the same method.
+
     my_record.delete()
     my_record.destroy()
 
@@ -187,12 +191,14 @@ See the [DigitalOcean v2 API Docs](https://developers.digitalocean.com/v2/#updat
     ubuntu_image = skiff.Image.get(ubuntu_slug)
 
 #### Delete/Destroy an Image
+These are aliases for the same method.
+
     my_image.delete()
     my_image.destroy()
 
-#### Update and Image
+#### Update an Image
     name = 'my_new_image'
-    my_image.update(name)
+    my_image = my_image.update(name)
 
 #### Transfer Image
     new_region = skiff.Region.get('nyc1')
@@ -204,6 +210,54 @@ See the [DigitalOcean v2 API Docs](https://developers.digitalocean.com/v2/#updat
 #### Get Specific Image Action by ID
     action_id = 1234
     my_image.get_action(action_id)
+
+### Keys
+
+#### Get All Keys
+    skiff.Key.all()
+
+#### Get Specific Key by ID or Fingerprint
+    my_key = skiff.Key.get('my public key')
+    my_key = skiff.Key.get('my:fi:ng:er:pr:in:t!')
+
+#### Create New Key
+    with open('~/.ssh/id_rsa.pub', 'r') as f:
+        pub_key = f.read()
+    my_key = skiff.Key.create(name='my public key', public_key=pub_key)
+
+#### Update Key
+    my_key = my_key.update('new public key name')
+
+#### Delete/Destroy Key
+These are aliases for the same method.
+
+    my_key.delete()
+    my_key.destroy()
+
+### Regions
+
+#### List All Regions
+    skiff.Region.all()
+    >>> [<New York 1 (nyc1)>,
+    >>> <San Francisco 1 (sfo1)>,
+    >>> <New York 2 (nyc2)>,
+    >>> <Amsterdam 2 (ams2)>,
+    >>> <Singapore 1 (sgp1)>]
+
+#### Get Specific Region by Slug
+There's probably not much benefit in getting a SkiffRegion instance rather than just passing the region slug string as a parameter.
+
+    nyc1_region = skiff.Region.get('nyc1')
+
+### Sizes
+
+#### Get all Sizes
+    skiff.Size.all()
+    >>> [<512mb>, <1gb>, <2gb>, <4gb>, <8gb>, <16gb>, <32gb>, <48gb>, <64gb>]
+
+### Get Specific Size
+    # search, not intelligent
+    small_size = skiff.Size.get('512')
 
 
 ## TODO
