@@ -32,7 +32,7 @@ tests_require = [
 
 setup(
     name='skiff',
-    version='0.3.2',
+    version='0.3.3',
     description="Python library for DigitalOcean's v2 API",
     long_description='''
 Python library for DigitalOcean's v2 API
