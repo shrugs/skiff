@@ -29,12 +29,19 @@ class SkiffImage(object):
 
 
 def get(iid):
-    r = requests.get(DO_BASE_URL + '/images/' + str(iid), headers=DO_HEADERS)
-    r = r.json()
-    if 'message' in r:
-        raise ValueError(r['message'])
+    if type(iid).__name__ == 'int':
+        r = requests.get(DO_BASE_URL + '/images/' + str(iid), headers=DO_HEADERS)
+        r = r.json()
+        if 'message' in r:
+            raise ValueError(r['message'])
+        else:
+            return SkiffImage(r['image'])
     else:
-        return SkiffImage(r['image'])
+        # search in string
+        images = all()
+        for img in images:
+            if (iid in img.name) or (iid in img.slug):
+                return img
 
 
 def all():
