@@ -10,7 +10,14 @@
 
 
 from setuptools import setup, find_packages
-from skiff import __version__
+# from skiff import __version__
+import os
+import sys
+
+# Publish Helper.
+if sys.argv[-1] == 'publish':
+    os.system('python setup.py sdist upload')
+    sys.exit()
 
 tests_require = [
     'mock',
@@ -26,7 +33,7 @@ tests_require = [
 
 setup(
     name='skiff',
-    version=__version__,
+    version='0.2.7',
     description="Python library for DigitalOcean's v2 API",
     long_description='''
 Python library for DigitalOcean's v2 API
@@ -55,10 +62,10 @@ Python library for DigitalOcean's v2 API
     install_requires=[
         # add your dependencies here
         # remember to use 'package-name>=x.y.z,<x.y+1.0' notation (this way you get bugfixes)
-        'requests >= 2.3.0, <3.0.0'
+        'requests>=2.3.0,<3.0.0'
     ],
     extras_require={
-        'tests': tests_require,
+        'tests': tests_require
     },
     entry_points={
         'console_scripts': [
