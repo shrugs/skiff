@@ -102,6 +102,13 @@ Alternatively, simply pass the kernel's ID.
 #### Get Droplet Kernels
     my_droplet.kernels()
 
+### Droplet Helper Methods
+
+#### has_action_in_progress
+Returns a boolean regarding whether or not the droplet is processing an action.
+
+    my_droplet.has_action_in_progress()
+    >>> False
 
 ### Actions
 

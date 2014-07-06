@@ -73,6 +73,11 @@ def get(iid):
     r = requests.get(DO_BASE_URL + '/images/' + str(iid), headers=DO_HEADERS)
     r = r.json()
     if 'message' in r:
+        # could not find, try basic search
+        images = all()
+        for img in images:
+            if iid in img.name:
+                return img
         raise ValueError(r['message'])
     else:
         return SkiffImage(r['image'])

@@ -33,6 +33,11 @@ def get(kid):
     r = requests.get(DO_BASE_URL + '/account/keys/' + str(kid), headers=DO_HEADERS)
     r = r.json()
     if 'message' in r:
+        # try searching
+        keys = all()
+        for key in keys:
+            if kid in key.name:
+                return key
         raise ValueError(r['message'])
     else:
         return SkiffKey(r['ssh_key'])

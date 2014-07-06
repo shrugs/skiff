@@ -7,6 +7,7 @@ from .Size import SkiffSize
 from .Kernel import SkiffKernel
 from .Region import SkiffRegion
 from .Network import SkiffNetwork
+from .Key import SkiffKey
 from . import Domain
 
 
@@ -194,7 +195,17 @@ def create(options=None, **kwargs):
     if not options:
         options = kwargs
 
-    # @TODO: if things in options are of my classes, use those properties
+    for key, val in options.iteritems():
+        if key == 'region' and isinstance(val, SkiffRegion):
+            options['region'] = val.slug
+        elif key == 'size' and isinstance(val, SkiffSize):
+            options['size'] = val.slug
+        elif key == 'image' and isinstance(val, SkiffImage):
+            options['image'] = val.id
+        elif key == 'ssh_keys':
+            for i, ssh_key in enumerate(val):
+                if isinstance(ssh_key, SkiffKey):
+                    options['ssh_keys'][i] = ssh_key.id
 
     r = requests.post(DO_BASE_URL + '/droplets', data=json.dumps(options), headers=DO_HEADERS)
     return SkiffDroplet(r.json()["droplet"])
