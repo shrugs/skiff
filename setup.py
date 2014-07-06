@@ -10,7 +10,6 @@
 
 
 from setuptools import setup, find_packages
-# from skiff import __version__
 import os
 import sys
 
@@ -33,7 +32,7 @@ tests_require = [
 
 setup(
     name='skiff',
-    version='0.3.1',
+    version='0.3.2',
     description="Python library for DigitalOcean's v2 API",
     long_description='''
 Python library for DigitalOcean's v2 API
