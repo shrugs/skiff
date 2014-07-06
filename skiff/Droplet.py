@@ -7,6 +7,7 @@ from .Size import SkiffSize
 from .Kernel import SkiffKernel
 from .Region import SkiffRegion
 from .Network import SkiffNetwork
+from . import Domain
 
 
 def destroy_droplet(did):
@@ -27,7 +28,7 @@ class SkiffDroplet(object):
         self.size = SkiffSize(options['size'])
         self.kernel = SkiffKernel(options['kernel'])
         for network_type, networks in options['networks'].iteritems():
-                setattr(self, network_type, [SkiffNetwork(n) for n in networks])
+            setattr(self, network_type, [SkiffNetwork(n) for n in networks])
 
         # aliases
         self.restart = self.reboot
@@ -164,6 +165,9 @@ class SkiffDroplet(object):
                 return True
 
         return False
+
+    def create_domain(self, domain_name):
+        return Domain.create(name=domain_name, ip_address=self.v4[0].ip_address)
 
 
 def get(did):
