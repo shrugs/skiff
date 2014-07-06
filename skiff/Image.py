@@ -15,6 +15,28 @@ class SkiffImage(object):
     def __repr__(self):
         return '<' + self.name + ' (#' + str(self.id) + ') ' + self.distribution + '>'
 
+    # @TODO: make this work
+    def do_action(self, action, options=None):
+        if not options:
+            options = {}
+
+        if isinstance(action, SkiffAction):
+            action = action.type
+
+        options["type"] = action
+        r = requests.post(DO_BASE_URL + '/images/' + str(self.id) + '/actions', data=json.dumps(options), headers=DO_HEADERS)
+        r = r.json()
+        if "message" in r:
+            raise ValueError(r["message"])
+        else:
+            return SkiffAction(r["action"])
+
+    def transfer(self, region):
+        if isinstance(region, SkiffRegion):
+            region = region.slug
+
+        return self.do_action('transfer', {'region': region})
+
     def delete(self):
         r = requests.delete(DO_BASE_URL + "/images/" + str(self.id), headers=DO_DELETE_HEADERS)
         return r.status_code == 204
@@ -27,22 +49,33 @@ class SkiffImage(object):
         r = r.json()
         return SkiffImage(r["image"])
 
-
-def get(iid):
-    if type(iid).__name__ == 'int':
-        r = requests.get(DO_BASE_URL + '/images/' + str(iid), headers=DO_HEADERS)
+    def actions(self):
+        r = requests.get(DO_BASE_URL + '/images/' + str(self.id) + '/actions', headers=DO_HEADERS)
         r = r.json()
         if 'message' in r:
             raise ValueError(r['message'])
         else:
-            return SkiffImage(r['image'])
+            return [SkiffAction(a) for a in r['actions']]
+
+    def get_action(self, action):
+        if isinstance(action, SkiffAction):
+            action = action.id
+        r = requests.get(DO_BASE_URL + '/images/' + str(self.id) + '/actions/' + str(action), headers=DO_HEADERS)
+        r = r.json()
+        if 'message' in r:
+            raise ValueError(r['message'])
+        else:
+            return SkiffAction(r['action'])
+
+
+def get(iid):
+    # same endpoint works with ids and slugs
+    r = requests.get(DO_BASE_URL + '/images/' + str(iid), headers=DO_HEADERS)
+    r = r.json()
+    if 'message' in r:
+        raise ValueError(r['message'])
     else:
-        # search in string
-        images = all()
-        for img in images:
-            if (iid in img.name) or (iid in img.slug):
-                return img
-        raise ValueError('No Suitable Image Found')
+        return SkiffImage(r['image'])
 
 
 def all():
