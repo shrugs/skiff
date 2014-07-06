@@ -32,7 +32,7 @@ tests_require = [
 
 setup(
     name='skiff',
-    version='0.3.3',
+    version='0.3.4',
     description="Python library for DigitalOcean's v2 API",
     long_description='''
 Python library for DigitalOcean's v2 API
@@ -50,9 +50,6 @@ Python library for DigitalOcean's v2 API
         'Operating System :: Unix',
         "Programming Language :: Python :: 2.6",
         "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.2",
-        "Programming Language :: Python :: 3.3",
-        "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: Implementation :: PyPy",
         'Operating System :: OS Independent',
     ],
