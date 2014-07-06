@@ -12,9 +12,10 @@ class SkiffDomainRecord(object):
 
         self.__dict__.update(options)
         self.domain = domain
+        self.destroy = self.delete
 
     def __repr__(self):
-        return '<' + self.type + ' (#' + str(self.id) + ') ' + self.name + ' -> ' + self.data + '>'
+        return '<' + self.domain.name + ' - ' + self.type + ' (#' + str(self.id) + ') ' + (self.name or '') + ' -> ' + self.data + '>'
 
     def delete(self):
         return delete_record(self.id)
@@ -35,6 +36,7 @@ class SkiffDomain(object):
         self.__dict__.update(options)
         self.record = self.get_record
         self.create = self.create_record
+        self.destroy = self.delete
 
     def __repr__(self):
         return '<' + self.name + '>'
@@ -45,7 +47,7 @@ class SkiffDomain(object):
     def records(self):
         r = requests.get(DO_BASE_URL + '/domains/' + str(self.name) + '/records', headers=DO_HEADERS)
         r = r.json()
-        return [SkiffDomainRecord(record) for record in r["domain_records"]]
+        return [SkiffDomainRecord(self, record) for record in r["domain_records"]]
 
     def create_record(self, options=None, **kwargs):
         if not options:
@@ -56,7 +58,7 @@ class SkiffDomain(object):
         if "message" in r:
             raise ValueError(r["message"])
         else:
-            return SkiffDomainRecord(r["domain_record"])
+            return SkiffDomainRecord(self, r["domain_record"])
 
     def delete_record(self, record):
         # @TODO: if is SkiffRecord, grab that property
@@ -67,7 +69,7 @@ class SkiffDomain(object):
         # @TODO: if is SkiffRecord, grab that property
         r = requests.get(DO_BASE_URL + '/domains/' + str(self.name) + '/records' + str(record), headers=DO_HEADERS)
         r = r.json()
-        return SkiffDomainRecord(r["domain_record"])
+        return SkiffDomainRecord(self, r["domain_record"])
 
     def update_record(self, record, new_name):
         # @TODO: if is SkiffRecord, grab that property
@@ -79,7 +81,7 @@ class SkiffDomain(object):
         if "message" in r:
             raise ValueError(r["message"])
         else:
-            return SkiffDomainRecord(r["domain_record"])
+            return SkiffDomainRecord(self, r["domain_record"])
 
 
 def all():
