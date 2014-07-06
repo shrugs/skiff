@@ -18,7 +18,10 @@ class SkiffDomainRecord(object):
         return '<' + self.domain.name + ' - ' + self.type + ' (#' + str(self.id) + ') ' + (self.name or '') + ' -> ' + self.data + '>'
 
     def delete(self):
-        return delete_record(self.id)
+        return self.domain.delete_record(self.id)
+
+    def update(self, new_name):
+        return self.domain.update_record(self.id, new_name)
 
 
 def delete_domain(did):
@@ -60,14 +63,16 @@ class SkiffDomain(object):
         else:
             return SkiffDomainRecord(self, r["domain_record"])
 
-    def delete_record(self, record):
-        # @TODO: if is SkiffRecord, grab that property
+    def delete_record(domain, record):
+        # if is SkiffDomainRecord, grab that property
+        if isinstance(record, SkiffDomainRecord):
+            record = record.id
+
         r = requests.delete(DO_BASE_URL + '/domains/' + str(self.name) + '/records/' + str(record), headers=DO_DELETE_HEADERS)
         return r.status_code == 204
 
     def get_record(self, record):
-        # @TODO: if is SkiffRecord, grab that property
-        r = requests.get(DO_BASE_URL + '/domains/' + str(self.name) + '/records' + str(record), headers=DO_HEADERS)
+        r = requests.get(DO_BASE_URL + '/domains/' + str(self.name) + '/records/' + str(record), headers=DO_HEADERS)
         r = r.json()
         return SkiffDomainRecord(self, r["domain_record"])
 
