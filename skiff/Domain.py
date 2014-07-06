@@ -37,7 +37,7 @@ class SkiffDomain(object):
         self.create = self.create_record
 
     def __repr__(self):
-        return '<' + self.domain + '>'
+        return '<' + self.name + '>'
 
     def delete(self):
         return delete_domain(self.name)
@@ -100,7 +100,15 @@ def create(options=None, **kwargs):
         return SkiffDomain(r["domain"])
 
 
-def get(domain):
-    r = requests.get(DO_BASE_URL + '/domains/' + str(domain), headers=DO_HEADERS)
-    r = r.json()
-    return SkiffDomain(r["domain"])
+def get(d):
+    if type(d).__name__ == 'int':
+        r = requests.get(DO_BASE_URL + '/domains/' + str(d), headers=DO_HEADERS)
+        r = r.json()
+        return SkiffDomain(r["domain"])
+    else:
+        # search in string
+        domains = all()
+        for dom in domains:
+            if d in dom.name:
+                return dom
+        raise ValueError('No Suitable Domain Found')
