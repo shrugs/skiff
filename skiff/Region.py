@@ -21,5 +21,9 @@ def all():
     return [SkiffRegion(a) for a in r["regions"]]
 
 
-def get(region):
-    return all()[region]
+def get(r):
+    regions = all()
+    for region in regions:
+        if r in region.slug:
+            return region
+    raise ValueError('No Suitable REgion Found')
