@@ -21,5 +21,10 @@ def all():
     return [SkiffSize(a) for a in r["sizes"]]
 
 
-def get(size):
-    return all()[size]
+def get(s):
+    s = str(s)
+    sizes = all()
+    for size in sizes:
+        if s in size.slug:
+            return size
+    raise ValueError('Unknown Size')
