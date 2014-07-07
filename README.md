@@ -1,6 +1,6 @@
 # Skiff
 
-Wrapper for DigitalOCean's v2 API
+Wrapper for DigitalOcean's v2 API
 
 ## Installation
     pip install skiff
