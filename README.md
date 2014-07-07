@@ -189,13 +189,15 @@ These are aliases for the same method.
     >>> <CentOS 6.5 x64 (#3448641) CentOS>,
     >>> <Debian 6.0 x64 (#12573) Debian>]
 
-#### Get Image by ID or Slug
+#### Get Image by ID, Slug, or Search
     # Get by ID
     my_image_id = 3101580
     my_image = skiff.Image.get(my_image_id)
     # Or by slug
     ubuntu_slug = 'ubuntu1404'
     ubuntu_image = skiff.Image.get(ubuntu_slug)
+    # Or by search (not very intelligent; useful for REPL use)
+    ubuntu_image = skiff.Image.get('Ubuntu 13.10')
 
 #### Delete/Destroy an Image
 These are aliases for the same method.
@@ -211,6 +213,8 @@ These are aliases for the same method.
     new_region = skiff.Region.get('nyc1')
     my_image.transfer(new_region)
 
+Alternatively, simply pass the string 'nyc1'.
+
 #### Get Image Actions
     my_image.actions()
 
@@ -223,8 +227,12 @@ These are aliases for the same method.
 #### Get All Keys
     skiff.Key.all()
 
-#### Get Specific Key by ID or Fingerprint
+#### Get Specific Key by ID, Name or, Fingerprint
+    # ID
+    my_key = skiff.Key.get(1234)
+    # Name
     my_key = skiff.Key.get('my public key')
+    # Fingerprint
     my_key = skiff.Key.get('my:fi:ng:er:pr:in:t!')
 
 #### Create New Key
