@@ -1,5 +1,6 @@
 import requests
 from .utils import DO_BASE_URL, DO_HEADERS
+from .utils import page_collection
 
 
 class SkiffSize(object):
@@ -16,9 +17,8 @@ class SkiffSize(object):
 
 
 def all():
-    r = requests.get(DO_BASE_URL + '/sizes', headers=DO_HEADERS)
-    r = r.json()
-    return [SkiffSize(a) for a in r["sizes"]]
+    paging_action = lambda r: [SkiffSize(a) for a in r["sizes"]]
+    return page_collection(DO_BASE_URL + '/sizes', paging_action)
 
 
 def get(s):

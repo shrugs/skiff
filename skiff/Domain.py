@@ -1,6 +1,7 @@
 import requests
 import json
 from .utils import DO_BASE_URL, DO_HEADERS, DO_DELETE_HEADERS
+from .utils import page_collection
 
 
 class SkiffDomainRecord(object):
@@ -92,9 +93,8 @@ class SkiffDomain(object):
 
 
 def all():
-    r = requests.get(DO_BASE_URL + '/domains', headers=DO_HEADERS)
-    r = r.json()
-    return [SkiffDomain(a) for a in r["domains"]]
+    paging_action = lambda r: [SkiffDomain(a) for a in r["domains"]]
+    return page_collection(DO_BASE_URL + '/domains', paging_action)
 
 
 def create(options=None, **kwargs):

@@ -1,6 +1,7 @@
 import requests
 import json
 from .utils import DO_BASE_URL, DO_HEADERS, DO_DELETE_HEADERS
+from .utils import page_collection
 
 
 class SkiffImage(object):
@@ -83,11 +84,6 @@ def get(iid):
 
 
 def all():
-    r = requests.get(DO_BASE_URL + '/images', headers=DO_HEADERS)
-    r = r.json()
-    if 'message' in r:
-        # @TODO: Better error?
-        raise ValueError(r['message'])
-    else:
-        # create new images for each image
-        return [SkiffImage(d) for d in r["images"]]
+    paging_action = lambda r: [SkiffImage(d) for d in r["images"]]
+    return page_collection(DO_BASE_URL + '/images', paging_action)
+

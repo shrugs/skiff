@@ -1,5 +1,6 @@
 import requests
 from .utils import DO_BASE_URL, DO_HEADERS
+from .utils import page_collection
 
 
 class SkiffRegion(object):
@@ -16,9 +17,8 @@ class SkiffRegion(object):
 
 
 def all():
-    r = requests.get(DO_BASE_URL + '/regions', headers=DO_HEADERS)
-    r = r.json()
-    return [SkiffRegion(a) for a in r["regions"]]
+    paging_action = lambda r: [SkiffRegion(a) for a in r["regions"]]
+    return page_collection(DO_BASE_URL + '/regions', paging_action)
 
 
 def get(r):

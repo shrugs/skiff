@@ -1,5 +1,6 @@
 import requests
 from .utils import DO_BASE_URL, DO_HEADERS
+from .utils import page_collection
 
 
 class SkiffAction(object):
@@ -16,9 +17,8 @@ class SkiffAction(object):
 
 
 def all():
-    r = requests.get(DO_BASE_URL + '/actions', headers=DO_HEADERS)
-    r = r.json()
-    return [SkiffAction(a) for a in r["actions"]]
+    paging_action = lambda r: [SkiffAction(a) for a in r["actions"]]
+    return page_collection(DO_BASE_URL + '/actions', paging_action)
 
 
 def get(aid):
