@@ -1,6 +1,7 @@
 import requests
 import json
 from .utils import DO_BASE_URL, DO_HEADERS, DO_DELETE_HEADERS
+from .utils import page_collection
 from .Action import SkiffAction
 from .Image import SkiffImage
 from .Size import SkiffSize
@@ -216,11 +217,6 @@ new = create
 
 
 def all():
-    r = requests.get(DO_BASE_URL + '/droplets', headers=DO_HEADERS)
-    r = r.json()
-    if 'message' in r:
-        # @TODO: Better error?
-        raise ValueError(r['message'])
-    else:
-        # create new Droplets for each droplet
-        return [SkiffDroplet(d) for d in r["droplets"]]
+    paging_action = lambda r: [SkiffDroplet(d) for d in r["droplets"]]
+    return page_collection(DO_BASE_URL + '/droplets', paging_action)
+

@@ -1,6 +1,7 @@
 import requests
 import json
 from .utils import DO_BASE_URL, DO_HEADERS, DO_DELETE_HEADERS
+from .utils import page_collection
 
 
 class SkiffKey(object):
@@ -55,11 +56,6 @@ new = create
 
 
 def all():
-    r = requests.get(DO_BASE_URL + '/account/keys', headers=DO_HEADERS)
-    r = r.json()
-    if 'message' in r:
-        # @TODO: Better error?
-        raise ValueError(r['message'])
-    else:
-        # create new account/keys for each droplet
-        return [SkiffKey(d) for d in r["ssh_keys"]]
+    paging_action = lambda r: [SkiffKey(d) for d in r["ssh_keys"]]
+    return page_collection(DO_BASE_URL + '/account/keys', paging_action)
+
