@@ -1,4 +1,3 @@
-import requests
 
 DO_TOKEN = None
 
