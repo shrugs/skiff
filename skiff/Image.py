@@ -1,6 +1,9 @@
-import requests
-import json
-from .utils import DO_BASE_URL, DO_HEADERS, DO_DELETE_HEADERS
+skiff = None
+
+
+def setSkiff(s):
+    global skiff
+    skiff = s
 
 
 class SkiffImage(object):
@@ -11,6 +14,7 @@ class SkiffImage(object):
             options = kwargs
 
         self.__dict__.update(options)
+        self.do_action = skiff.get_do_action('images')
 
     def __repr__(self):
         return '<' + self.name + ' (#' + str(self.id) + ') ' + self.distribution + '>'
@@ -23,8 +27,8 @@ class SkiffImage(object):
             action = action.type
 
         options["type"] = action
-        r = requests.post(DO_BASE_URL + '/images/' + str(self.id) + '/actions', data=json.dumps(options), headers=DO_HEADERS)
-        r = r.json()
+
+        r = skiff.post('/images/%s/actions' % (str(self.id)), data=options)
         if "message" in r:
             raise ValueError(r["message"])
         else:
@@ -37,30 +41,29 @@ class SkiffImage(object):
         return self.do_action('transfer', {'region': region})
 
     def delete(self):
-        r = requests.delete(DO_BASE_URL + "/images/" + str(self.id), headers=DO_DELETE_HEADERS)
-        return r.status_code == 204
+        return skiff.delete('/images/%s' % (str(self.id)))
 
     def update(self, new_name):
         options = {
             'name': new_name
         }
-        r = requests.put(DO_BASE_URL + '/images/' + str(self.id), data=json.dumps(options), headers=DO_HEADERS)
-        r = r.json()
+
+        r = skiff.put('/images/%s' % (str(self.id)), data=options)
+        self.name = new_name
         return SkiffImage(r["image"])
 
     def actions(self):
-        r = requests.get(DO_BASE_URL + '/images/' + str(self.id) + '/actions', headers=DO_HEADERS)
-        r = r.json()
+        r = skiff.get('/images/%s/actions')
         if 'message' in r:
             raise ValueError(r['message'])
         else:
             return [SkiffAction(a) for a in r['actions']]
 
-    def get_action(self, action):
-        if isinstance(action, SkiffAction):
-            action = action.id
-        r = requests.get(DO_BASE_URL + '/images/' + str(self.id) + '/actions/' + str(action), headers=DO_HEADERS)
-        r = r.json()
+    def get_action(self, action_id):
+        if isinstance(action_id, SkiffAction):
+            action_id = action.id
+
+        r = skiff.get('/images/%s/actions/%s' % (str(self.id), str(action)))
         if 'message' in r:
             raise ValueError(r['message'])
         else:
@@ -69,8 +72,7 @@ class SkiffImage(object):
 
 def get(iid):
     # same endpoint works with ids and slugs
-    r = requests.get(DO_BASE_URL + '/images/' + str(iid), headers=DO_HEADERS)
-    r = r.json()
+    r = skiff.get('/images/%s')
     if 'message' in r:
         # could not find, try basic search
         images = all()
@@ -83,11 +85,8 @@ def get(iid):
 
 
 def all():
-    r = requests.get(DO_BASE_URL + '/images', headers=DO_HEADERS)
-    r = r.json()
+    r = skiff.get('/images')
     if 'message' in r:
-        # @TODO: Better error?
         raise ValueError(r['message'])
     else:
-        # create new images for each image
         return [SkiffImage(d) for d in r["images"]]

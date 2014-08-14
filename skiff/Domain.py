@@ -1,6 +1,9 @@
-import requests
-import json
-from .utils import DO_BASE_URL, DO_HEADERS, DO_DELETE_HEADERS
+skiff = None
+
+
+def setSkiff(s):
+    global skiff
+    skiff = s
 
 
 class SkiffDomainRecord(object):
@@ -21,6 +24,7 @@ class SkiffDomainRecord(object):
         return self.domain.delete_record(self.id)
 
     def update(self, new_name):
+        self.name = new_name
         return self.domain.update_record(self.id, new_name)
 
 
@@ -48,8 +52,8 @@ class SkiffDomain(object):
         return delete_domain(self.name)
 
     def records(self):
-        r = requests.get(DO_BASE_URL + '/domains/' + str(self.name) + '/records', headers=DO_HEADERS)
-        r = r.json()
+        r = utils.get('/domains/' + str(self.name) + '/records')
+
         return [SkiffDomainRecord(self, record) for record in r["domain_records"]]
 
     def create_record(self, options=None, **kwargs):

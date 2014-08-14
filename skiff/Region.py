@@ -1,5 +1,9 @@
-import requests
-from .utils import DO_BASE_URL, DO_HEADERS
+skiff = None
+
+
+def setSkiff(s):
+    global skiff
+    skiff = s
 
 
 class SkiffRegion(object):
@@ -16,9 +20,8 @@ class SkiffRegion(object):
 
 
 def all():
-    r = requests.get(DO_BASE_URL + '/regions', headers=DO_HEADERS)
-    r = r.json()
-    return [SkiffRegion(a) for a in r["regions"]]
+    r = skiff.get('/regions')
+    return [SkiffRegion(a) for a in r['regions']]
 
 
 def get(r):
@@ -26,4 +29,4 @@ def get(r):
     for region in regions:
         if r in region.slug:
             return region
-    raise ValueError('No Suitable REgion Found')
+    raise ValueError('No Suitable Region Found')

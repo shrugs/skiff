@@ -1,6 +1,5 @@
 import requests
 import json
-from .utils import DO_BASE_URL, DO_HEADERS, DO_DELETE_HEADERS
 from .Action import SkiffAction
 from .Image import SkiffImage
 from .Size import SkiffSize
@@ -10,10 +9,16 @@ from .Network import SkiffNetwork
 from .Key import SkiffKey
 from . import Domain
 
+skiff = None
+
+
+def setSkiff(s):
+    global skiff
+    skiff = s
+
 
 def destroy_droplet(did):
-    r = requests.delete(DO_BASE_URL + "/droplets/" + str(did), headers=DO_DELETE_HEADERS)
-    return r.status_code == 204
+    return skiff.delete('/droplets/' + str(did))
 
 
 class SkiffDroplet(object):
@@ -37,6 +42,7 @@ class SkiffDroplet(object):
         self.reset_password = self.password_reset
 
     def __repr__(self):
+        # return '<%s (#%d) %s - %s - %s' % (self.name, self.id, self.region.slug, self.image.name, self.size.slug)
         return '<' + self.name + ' (#' + str(self.id) + ') ' + self.region.slug + ' - ' + self.image.name + ' - ' + self.size.slug + '>'
 
     def do_action(self, action, options=None):
@@ -46,48 +52,40 @@ class SkiffDroplet(object):
         if isinstance(action, SkiffAction):
             action = action.type
 
-        options["type"] = action
-        r = requests.post(DO_BASE_URL + '/droplets/' + str(self.id) + '/actions', data=json.dumps(options), headers=DO_HEADERS)
-        r = r.json()
-        if "message" in r:
-            raise ValueError(r["message"])
+        options['type'] = action
+
+        r = skiff.post('/droplets/%s/actions' % (str(self.id)), data=options)
+        if 'message' in r:
+            raise ValueError(r['message'])
         else:
-            return SkiffAction(r["action"])
+            return SkiffAction(r['action'])
 
     def destroy(self):
         return destroy_droplet(self.id)
 
     def snapshots(self):
-        r = requests.get(DO_BASE_URL + '/droplets/' + str(self.id) + '/snapshots', headers=DO_HEADERS)
-        # for each snapshot, create a SkiffImage and return
-        r = r.json()
+        r = skiff.get('/droplets/%s/snapshots' % str(self.id))
         if 'message' in r:
             raise ValueError(r['message'])
         else:
             return [SkiffImage(a) for a in r['snapshots']]
 
     def backups(self):
-        r = requests.get(DO_BASE_URL + '/droplets/' + str(self.id) + '/backups', headers=DO_HEADERS)
-        # for each backup, create a SkiffImage and return
-        r = r.json()
+        r = skiff.get('/droplets/%s/backups' % (str(self.id)))
         if 'message' in r:
             raise ValueError(r['message'])
         else:
             return [SkiffImage(a) for a in r['backups']]
 
     def actions(self):
-        r = requests.get(DO_BASE_URL + '/droplets/' + str(self.id) + '/actions', headers=DO_HEADERS)
-        # for each action, create a SkiffAction and return
-        r = r.json()
+        r = skiff.get('/droplets/%s/actions' % (str(self.id)))
         if 'message' in r:
             raise ValueError(r['message'])
         else:
             return [SkiffAction(a) for a in r['actions']]
 
     def kernels(self):
-        r = requests.get(DO_BASE_URL + '/droplets/' + str(self.id) + '/kernels', headers=DO_HEADERS)
-        # for each kernel, create a SkiffKernel and return
-        r = r.json()
+        r = skiff.get('/droplets/%s/kernels' % (str(self.id)))
         if 'message' in r:
             raise ValueError(r['message'])
         else:
@@ -152,12 +150,11 @@ class SkiffDroplet(object):
         return self.do_action('enable_private_networking')
 
     def get_action(self, action_id):
-        r = requests.get(DO_BASE_URL + '/droplets/' + str(self.id) + '/actions/' + str(action_id), headers=DO_HEADERS)
-        r = r.json()
-        if "message" in r:
-            raise ValueError(r["message"])
+        r = skiff.get('/droplets/%s/actions/%s' % (str(self.id), str(action_id)))
+        if 'message' in r:
+            raise ValueError(r['message'])
         else:
-            return SkiffAction(r["action"])
+            return SkiffAction(r['action'])
 
     # UTILITY METHODS
     def has_action_in_progress(self):
@@ -174,8 +171,7 @@ class SkiffDroplet(object):
 def get(did):
     if type(did).__name__ == 'int':
         # is droplet id, get it
-        r = requests.get(DO_BASE_URL + '/droplets/' + str(did), headers=DO_HEADERS)
-        r = r.json()
+        r = skiff.get('/droplets/%s' % (str(did)))
         if 'message' in r:
             raise ValueError(r['message'])
         else:
@@ -188,7 +184,7 @@ def get(did):
             if did in d.name:
                 return d
 
-        raise ValueError("No Suitable Droplet Found for Search: %s" % str(did))
+        raise ValueError('No Suitable Droplet Found for Search: %s' % str(did))
 
 
 def create(options=None, **kwargs):
@@ -207,8 +203,8 @@ def create(options=None, **kwargs):
                 if isinstance(ssh_key, SkiffKey):
                     options['ssh_keys'][i] = ssh_key.id
 
-    r = requests.post(DO_BASE_URL + '/droplets', data=json.dumps(options), headers=DO_HEADERS)
-    return SkiffDroplet(r.json()["droplet"])
+    r = skiff.post('/droplets', data=options)
+    return SkiffDroplet(r['droplet'])
 
 
 # alias new to create
@@ -216,11 +212,10 @@ new = create
 
 
 def all():
-    r = requests.get(DO_BASE_URL + '/droplets', headers=DO_HEADERS)
-    r = r.json()
+    r = skiff.get('/droplets')
     if 'message' in r:
         # @TODO: Better error?
         raise ValueError(r['message'])
     else:
         # create new Droplets for each droplet
-        return [SkiffDroplet(d) for d in r["droplets"]]
+        return [SkiffDroplet(d) for d in r['droplets']]

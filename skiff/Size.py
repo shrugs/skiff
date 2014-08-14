@@ -1,5 +1,9 @@
-import requests
-from .utils import DO_BASE_URL, DO_HEADERS
+skiff = None
+
+
+def setSkiff(s):
+    global skiff
+    skiff = s
 
 
 class SkiffSize(object):
@@ -16,9 +20,8 @@ class SkiffSize(object):
 
 
 def all():
-    r = requests.get(DO_BASE_URL + '/sizes', headers=DO_HEADERS)
-    r = r.json()
-    return [SkiffSize(a) for a in r["sizes"]]
+    r = skiff.get('/sizes')
+    return [SkiffSize(a) for a in r['sizes']]
 
 
 def get(s):
