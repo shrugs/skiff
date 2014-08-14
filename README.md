@@ -28,7 +28,7 @@ Alternatively, you can pass a dictionary containing these values.
 
 #### Get
     # Get droplet by ID
-    my_droplet = skill.Droplet.get(id)
+    my_droplet = skiff.Droplet.get(id)
     # Get droplet by Name (not intelligent)
     my_droplet = skiff.Droplet.get('hello.world')
 
