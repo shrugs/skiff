@@ -13,6 +13,8 @@ assert s is not None
 # I just want to test stuff, don't judge this code
 
 
+# pytest assures me that this droplet function is called only once, but I don't believe it; this test suite
+#  takes forever
 @pytest.fixture
 def droplet(request):
     # for simplicity, this requires that you already have an ssh key uploaded

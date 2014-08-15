@@ -9,8 +9,8 @@ Wrapper for DigitalOcean's v2 API
 
 ## Basic Usage
     import skiff
-    skiff.token("<my_token>")
-    droplets = skiff.Droplet.all()
+    s = skiff.rig("my_token")
+    droplets = s.Droplet.all()
     >>> [<cond.in (#267357) nyc1 - Ubuntu 12.10 x64 - 512mb>,
     >>> <hey.github (#2012972) nyc1 - Ubuntu 13.10 x32 - 512mb>,
     >>> <hello.world (#2012974) nyc1 - Ubuntu 13.10 x32 - 512mb>]
@@ -21,16 +21,23 @@ Wrapper for DigitalOcean's v2 API
 
 #### Create
 
-    my_droplet = skiff.Droplet.create(name='hello.world', region='nyc1', size='512mb', image=5141286)
+    my_droplet = s.Droplet.create(name='hello.world',
+                                  region='nyc1',
+                                  size='512mb',
+                                  image=5141286)
     >>> <hello.world (#2012974) nyc1 - Ubuntu 14.04 x64 - 512mb>
+    # wait until droplet is created
+    my_droplet.wait_till_done()
+    # refresh network information
+    my_droplet = my_droplet.refresh()
 
-Alternatively, you can pass a dictionary containing these values.
+Alternatively, you can pass a dictionary containing those values.
 
 #### Get
     # Get droplet by ID
-    my_droplet = skiff.Droplet.get(id)
+    my_droplet = s.Droplet.get(id)
     # Get droplet by Name (not intelligent)
-    my_droplet = skiff.Droplet.get('hello.world')
+    my_droplet = s.Droplet.get('hello.world')
 
 #### Destroy
     my_droplet.destroy()
@@ -56,21 +63,21 @@ Alternatively, you can pass a dictionary containing these values.
 
 #### Resize
     # Get size via search
-    some_size = skiff.Size.get('512')
+    some_size = s.Size.get('512')
     >>> <512mb>
     my_droplet.resize(some_size)
 
 Alternatively, simply pass in the string `'512mb'`.
 
 #### Rebuild
-    ubuntu_image = skiff.Image.get('Ubuntu 13.10')
+    ubuntu_image = s.Image.get('Ubuntu 13.10')
     my_droplet.rebuild(ubuntu_image)
 
 #### Restore
     # Default to current Image
     my_droplet.restore()
     # Specify Image
-    ubuntu_image = skiff.Image.get('Ubuntu 13.10')
+    ubuntu_image = s.Image.get('Ubuntu 13.10')
     my_droplet.restore(ubuntu_image)
 
 #### Password Reset
@@ -106,29 +113,44 @@ Alternatively, simply pass the kernel's ID.
 
 ### Droplet Helper Methods
 
+#### refresh/reload
+When the droplet's stats change remotely, call this function to manually update your local representation.
+
+**This is particularly useful after creating a new droplet because the network info is blank at request time.**
+
+
+    my_droplet = my_droplet.refresh()
+    my_droplet = my_droplet.reload()
+
 #### has_action_in_progress
 Returns a boolean regarding whether or not the droplet is processing an action.
 
     my_droplet.has_action_in_progress()
     >>> False
 
+#### wait_till_done
+Blocks until the droplet has no more pending actions.
+    
+    # waits until the droplet is ready to use, polling every 5 seconds
+    my_droplet.wait_till_done(5)
+
 ### Actions
 
 #### Get All Actions
 Returns all actions for a token.
 
-    skiff.Action.all()
+    s.Action.all()
 
 #### Get Action by ID
 
     action_id = 28012139
-    skiff.Action.get(action_id)
+    s.Action.get(action_id)
     >>> <destroy (#28012139) completed>
 
 ### Domains
 
 #### Get All Domains
-    skiff.Domain.all()
+    s.Domain.all()
     >>> [<blog.cond.in>,
     >>> <matt.cond.in>,
     >>> <example.com>,
@@ -139,11 +161,11 @@ Returns all actions for a token.
     my_domain = my_droplet.create_domain('example.com')
 
     # or more manually
-    my_domain = skiff.Domain.create(name='example.com', ip_address=my_droplet.v4[0].ip_address)
+    my_domain = s.Domain.create(name='example.com', ip_address=my_droplet.v4[0].ip_address)
 
 #### Get Specific Domain
-    my_domain = skiff.Domain.get('example.com')
-    my_domain = skiff.Domain.get(domain_id)
+    my_domain = s.Domain.get('example.com')
+    my_domain = s.Domain.get(domain_id)
 
 #### Delete/Destroy Domain
 These are aliases for the same method.
@@ -184,7 +206,7 @@ These are aliases for the same method.
 ### Images
 
 #### List All Images
-    skiff.Image.all()
+    s.Image.all()
     >>> [<CentOS 5.8 x64 (#1601) CentOS>,
     >>> <CentOS 5.8 x32 (#1602) CentOS>,
     >>> ...........
@@ -194,12 +216,12 @@ These are aliases for the same method.
 #### Get Image by ID, Slug, or Search
     # Get by ID
     my_image_id = 3101580
-    my_image = skiff.Image.get(my_image_id)
+    my_image = s.Image.get(my_image_id)
     # Or by slug
     ubuntu_slug = 'ubuntu1404'
-    ubuntu_image = skiff.Image.get(ubuntu_slug)
+    ubuntu_image = s.Image.get(ubuntu_slug)
     # Or by search (not very intelligent; useful for REPL use)
-    ubuntu_image = skiff.Image.get('Ubuntu 13.10')
+    ubuntu_image = s.Image.get('Ubuntu 13.10')
 
 #### Delete/Destroy an Image
 These are aliases for the same method.
@@ -212,7 +234,7 @@ These are aliases for the same method.
     my_image = my_image.update(name)
 
 #### Transfer Image
-    new_region = skiff.Region.get('nyc1')
+    new_region = s.Region.get('nyc1')
     my_image.transfer(new_region)
 
 Alternatively, simply pass the string 'nyc1'.
@@ -227,20 +249,20 @@ Alternatively, simply pass the string 'nyc1'.
 ### Keys
 
 #### Get All Keys
-    skiff.Key.all()
+    s.Key.all()
 
 #### Get Specific Key by ID, Name or, Fingerprint
     # ID
-    my_key = skiff.Key.get(1234)
+    my_key = s.Key.get(1234)
     # Name
-    my_key = skiff.Key.get('my public key')
+    my_key = s.Key.get('my public key')
     # Fingerprint
-    my_key = skiff.Key.get('my:fi:ng:er:pr:in:t!')
+    my_key = s.Key.get('my:fi:ng:er:pr:in:t!')
 
 #### Create New Key
     with open('~/.ssh/id_rsa.pub', 'r') as f:
         pub_key = f.read()
-    my_key = skiff.Key.create(name='my public key', public_key=pub_key)
+    my_key = s.Key.create(name='my public key', public_key=pub_key)
 
 #### Update Key
     my_key = my_key.update('new public key name')
@@ -254,7 +276,7 @@ These are aliases for the same method.
 ### Regions
 
 #### List All Regions
-    skiff.Region.all()
+    s.Region.all()
     >>> [<New York 1 (nyc1)>,
     >>> <San Francisco 1 (sfo1)>,
     >>> <New York 2 (nyc2)>,
@@ -264,22 +286,22 @@ These are aliases for the same method.
 #### Get Specific Region by Slug
 There's probably not much benefit in getting a SkiffRegion instance rather than just passing the region slug string as a parameter.
 
-    nyc1_region = skiff.Region.get('nyc1')
+    nyc1_region = s.Region.get('nyc1')
 
 ### Sizes
 
 #### Get all Sizes
-    skiff.Size.all()
+    s.Size.all()
     >>> [<512mb>, <1gb>, <2gb>, <4gb>, <8gb>, <16gb>, <32gb>, <48gb>, <64gb>]
 
 ### Get Specific Size
     # search, not intelligent
-    small_size = skiff.Size.get('512')
+    small_size = s.Size.get('512')
 
 
 ## TODO
 
-Make it so you can have multiple api wrappers at once that have different tokens, rather than the token being a 'global'.
+Suggestions accepted via Issues and Pull-Requests :)
 
 ## License 
 
