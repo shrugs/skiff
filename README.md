@@ -2,7 +2,7 @@
 
 Wrapper for DigitalOcean's v2 API
 
-![skiff](https://raw.githubusercontent.com/Shrugs/skiff/master/media/SkiffLogo.png)
+<img src="https://raw.githubusercontent.com/Shrugs/skiff/master/media/SkiffLogo.png" width=200>
 
 ## Installation
     pip install skiff
