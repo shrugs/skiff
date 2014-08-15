@@ -94,7 +94,7 @@ class TestDomains:
 
 class TestImages:
     def test_all(self):
-        assert len(s.Image.all()) > 0
+        assert len(s.Image.all(per_page=9001)) > 0
 
     def test_get(self):
         # test string search
