@@ -16,7 +16,7 @@ class SkiffSize(object):
         self.__dict__.update(options)
 
     def __repr__(self):
-        return '<' + self.slug + '>'
+        return '<%s>' % (self.slug)
 
 
 def all():

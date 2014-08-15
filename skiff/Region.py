@@ -16,7 +16,7 @@ class SkiffRegion(object):
         self.__dict__.update(options)
 
     def __repr__(self):
-        return '<' + self.name + ' (' + self.slug + ')>'
+        return '<%s (%s)>' % (self.name, self.slug)
 
 
 def all():

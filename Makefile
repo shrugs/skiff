@@ -27,11 +27,3 @@ unit:
 # show coverage in html format
 coverage-html: unit
 	@coverage html -d cover
-
-
-# run tests against all supported python versions
-tox:
-	@tox
-
-#docs:
-	#@cd skiff/docs && make html && open _build/html/index.html

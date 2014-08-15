@@ -21,8 +21,8 @@ Wrapper for DigitalOcean's v2 API
 
 #### Create
 
-    my_droplet = skiff.Droplet.create(name='hello.world', region='nyc1', size='512mb', image=3101580)
-    >>> <hello.world (#2012974) nyc1 - Ubuntu 13.10 x32 - 512mb>
+    my_droplet = skiff.Droplet.create(name='hello.world', region='nyc1', size='512mb', image=5141286)
+    >>> <hello.world (#2012974) nyc1 - Ubuntu 14.04 x64 - 512mb>
 
 Alternatively, you can pass a dictionary containing these values.
 

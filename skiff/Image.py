@@ -14,10 +14,9 @@ class SkiffImage(object):
             options = kwargs
 
         self.__dict__.update(options)
-        self.do_action = skiff.get_do_action('images')
 
     def __repr__(self):
-        return '<' + self.name + ' (#' + str(self.id) + ') ' + self.distribution + '>'
+        return '<%s (#%s) %s>' % (self.name, self.id, self.distribution)
 
     def do_action(self, action, options=None):
         if not options:
@@ -26,13 +25,13 @@ class SkiffImage(object):
         if isinstance(action, SkiffAction):
             action = action.type
 
-        options["type"] = action
+        options['type'] = action
 
-        r = skiff.post('/images/%s/actions' % (str(self.id)), data=options)
-        if "message" in r:
-            raise ValueError(r["message"])
+        r = skiff.post('/images/%s/actions' % (self.id), data=options)
+        if 'message' in r:
+            raise ValueError(r['message'])
         else:
-            return SkiffAction(r["action"])
+            return SkiffAction(r['action'])
 
     def transfer(self, region):
         if isinstance(region, SkiffRegion):
@@ -41,16 +40,16 @@ class SkiffImage(object):
         return self.do_action('transfer', {'region': region})
 
     def delete(self):
-        return skiff.delete('/images/%s' % (str(self.id)))
+        return skiff.delete('/images/%s' % (self.id))
 
     def update(self, new_name):
         options = {
             'name': new_name
         }
 
-        r = skiff.put('/images/%s' % (str(self.id)), data=options)
+        r = skiff.put('/images/%s' % (self.id), data=options)
         self.name = new_name
-        return SkiffImage(r["image"])
+        return SkiffImage(r['image'])
 
     def actions(self):
         r = skiff.get('/images/%s/actions')
@@ -63,7 +62,7 @@ class SkiffImage(object):
         if isinstance(action_id, SkiffAction):
             action_id = action.id
 
-        r = skiff.get('/images/%s/actions/%s' % (str(self.id), str(action)))
+        r = skiff.get('/images/%s/actions/%s' % (self.id, str(action)))
         if 'message' in r:
             raise ValueError(r['message'])
         else:
@@ -72,7 +71,7 @@ class SkiffImage(object):
 
 def get(iid):
     # same endpoint works with ids and slugs
-    r = skiff.get('/images/%s')
+    r = skiff.get('/images/%s' % (iid))
     if 'message' in r:
         # could not find, try basic search
         images = all()
@@ -89,4 +88,4 @@ def all():
     if 'message' in r:
         raise ValueError(r['message'])
     else:
-        return [SkiffImage(d) for d in r["images"]]
+        return [SkiffImage(d) for d in r['images']]

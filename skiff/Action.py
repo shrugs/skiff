@@ -17,7 +17,7 @@ class SkiffAction(object):
         self.__dict__.update(options)
 
     def __repr__(self):
-        return '<' + self.type + ' (#' + str(self.id) + ') ' + self.status + '>'
+        return '<%s (#%s) %s>' % (self.type, self.id, self.status)
 
 
 def all():
@@ -26,5 +26,8 @@ def all():
 
 
 def get(aid):
-    r = skiff.get('/actions/%s' % (str(aid)))
-    return SkiffAction(r['action'])
+    r = skiff.get('/actions/%s' % (aid))
+    if 'message' in r:
+        raise ValueError(r['message'])
+    else:
+        return SkiffAction(r['action'])

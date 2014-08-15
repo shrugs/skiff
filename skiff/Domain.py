@@ -18,7 +18,7 @@ class SkiffDomainRecord(object):
         self.destroy = self.delete
 
     def __repr__(self):
-        return '<' + self.domain.name + ' - ' + self.type + ' (#' + str(self.id) + ') ' + (self.name or '') + ' -> ' + self.data + '>'
+        return '<%s - %s (#%s) %s -> %s>' % (self.domain.name, self.type, self.id, self.name, self.data)
 
     def delete(self):
         return self.domain.delete_record(self.id)
@@ -29,8 +29,7 @@ class SkiffDomainRecord(object):
 
 
 def delete_domain(did):
-    r = requests.delete(DO_BASE_URL + "/domains/" + str(did), headers=DO_DELETE_HEADERS)
-    return r.status_code == 204
+    return skiff.delete('/domains/%s' % (did))
 
 
 class SkiffDomain(object):
@@ -46,78 +45,72 @@ class SkiffDomain(object):
         self.destroy = self.delete
 
     def __repr__(self):
-        return '<' + self.name + '>'
+        return '<%s>' % (self.name)
 
     def delete(self):
         return delete_domain(self.name)
 
     def records(self):
-        r = utils.get('/domains/' + str(self.name) + '/records')
+        r = skiff.get('/domains/%s/records' % (self.name))
 
-        return [SkiffDomainRecord(self, record) for record in r["domain_records"]]
+        return [SkiffDomainRecord(self, record) for record in r['domain_records']]
 
     def create_record(self, options=None, **kwargs):
         if not options:
             options = kwargs
 
-        r = requests.post(DO_BASE_URL + '/domains/' + str(self.name) + '/records', data=json.dumps(options), headers=DO_HEADERS)
-        r = r.json()
-        if "message" in r:
-            raise ValueError(r["message"])
+        r = skiff.post('/domains/%s/records' % (self.name), data=options)
+        if 'message' in r:
+            raise ValueError(r['message'])
         else:
-            return SkiffDomainRecord(self, r["domain_record"])
+            return SkiffDomainRecord(self, r['domain_record'])
 
     def delete_record(domain, record):
         # if is SkiffDomainRecord, grab that property
         if isinstance(record, SkiffDomainRecord):
             record = record.id
 
-        r = requests.delete(DO_BASE_URL + '/domains/' + str(self.name) + '/records/' + str(record), headers=DO_DELETE_HEADERS)
-        return r.status_code == 204
+        return skiff.delete('/domains/%s/records/%s' % (self.name, record))
 
     def get_record(self, record):
-        r = requests.get(DO_BASE_URL + '/domains/' + str(self.name) + '/records/' + str(record), headers=DO_HEADERS)
-        r = r.json()
-        return SkiffDomainRecord(self, r["domain_record"])
+        r = skiff.get('/domains/%s/records/%s' % (self.name, record))
+        return SkiffDomainRecord(self, r['domain_record'])
 
     def update_record(self, record, new_name):
         if isinstance(record, SkiffDomainRecord):
             record = record.id
 
         options = {
-            "name": new_name
+            'name': new_name
         }
-        r = request.put(DO_BASE_URL + '/domains/' + str(self.name) + '/records/' + str(record), data=json.dumps(options), headers=DO_HEADERS)
-        r = r.json()
-        if "message" in r:
-            raise ValueError(r["message"])
+
+        r = skiff.put('/domains/%s/records/%s' % (self.name, record), data=options)
+        if 'message' in r:
+            raise ValueError(r['message'])
         else:
-            return SkiffDomainRecord(self, r["domain_record"])
+            return SkiffDomainRecord(self, r['domain_record'])
 
 
 def all():
-    r = requests.get(DO_BASE_URL + '/domains', headers=DO_HEADERS)
-    r = r.json()
-    return [SkiffDomain(a) for a in r["domains"]]
+    r = skiff.get('/domains')
+    return [SkiffDomain(a) for a in r['domains']]
 
 
 def create(options=None, **kwargs):
     if not options:
         options = kwargs
 
-    r = requests.post(DO_BASE_URL + '/domains', data=json.dumps(options), headers=DO_HEADERS)
-    r = r.json()
-    if "message" in r:
-        raise ValueError(r["message"])
+    r = skiff.post('/domains', data=options)
+    if 'message' in r:
+        raise ValueError(r['message'])
     else:
-        return SkiffDomain(r["domain"])
+        return SkiffDomain(r['domain'])
 
 
 def get(d):
     if type(d).__name__ == 'int':
-        r = requests.get(DO_BASE_URL + '/domains/' + str(d), headers=DO_HEADERS)
-        r = r.json()
-        return SkiffDomain(r["domain"])
+        r = skiff.get('/domains/%s' % (d))
+        return SkiffDomain(r['domain'])
     else:
         # search in string
         domains = all()

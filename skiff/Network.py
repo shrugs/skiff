@@ -10,4 +10,4 @@ class SkiffNetwork(object):
         self.__dict__.update(options)
 
     def __repr__(self):
-        return '<' + self.ip_address + ' - ' + self.type + '>'
+        return '<%s - %s>' % (self.ip_address, self.type)

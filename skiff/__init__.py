@@ -9,4 +9,4 @@
 # Copyright (c) 2014 Matt Condon m@cond.in
 
 # from . import (Action, Domain, Droplet, Image, Kernel, Key, Region, Size)
-from .utils import SkiffClass
+from .utils import rig

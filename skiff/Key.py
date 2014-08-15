@@ -17,19 +17,19 @@ class SkiffKey(object):
         self.delete = self.destroy
 
     def __repr__(self):
-        return '<' + self.name + '(#' + (str(self.id) or '??') + ')>'
+        return '<%s (#%s)>' % (self.name, self.id or '??')
 
     def update(self, new_name):
         options = {
             'name': new_name
         }
 
-        r = skiff.put('/account/keys/%s' % (str(self.id)), data=options)
+        r = skiff.put('/account/keys/%s' % (self.id), data=options)
         self.name = new_name
         return SkiffKey(r['ssh_key'])
 
     def destroy(self):
-        return skiff.delete('/account/keys/%s' % (str(self.id)))
+        return skiff.delete('/account/keys/%s' % (self.id))
 
 
 def get(kid):
@@ -50,7 +50,10 @@ def create(options=None, **kwargs):
         options = kwargs
 
     r = skiff.post('/account/keys', data=options)
-    return SkiffKey(r['ssh_key'])
+    if 'message' in r:
+        raise ValueError(r['message'])
+    else:
+        return SkiffKey(r['ssh_key'])
 
 
 # alias new to create
