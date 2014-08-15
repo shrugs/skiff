@@ -303,6 +303,14 @@ There's probably not much benefit in getting a SkiffRegion instance rather than 
 
 Suggestions accepted via Issues and Pull-Requests :)
 
+## Testing
+
+run py.test
+
+Note: Takes a while.
+
+    py.test
+
 ## License 
 
 MIT
