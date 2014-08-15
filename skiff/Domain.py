@@ -65,7 +65,7 @@ class SkiffDomain(object):
         else:
             return SkiffDomainRecord(self, r['domain_record'])
 
-    def delete_record(domain, record):
+    def delete_record(self, domain, record):
         # if is SkiffDomainRecord, grab that property
         if isinstance(record, SkiffDomainRecord):
             record = record.id
