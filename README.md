@@ -17,6 +17,12 @@ Wrapper for DigitalOcean's v2 API
 
 ## API
 
+### General Notes
+
+Creation calls can be made with keyword args or a single dictionary argument.
+
+Calls to `s.<resource>.all()` can also be passed query parameters. The v2 API currently only responds to `per_page`. If you'd like to avoid paging though request results that contain more than 10 results, set `per_page` to something ludicrous. For example, `s.Image.all(per_page=9001)` will return all of the images. Actual paging functionality is on the roadmap.
+
 ### Droplets
 
 #### Create
@@ -206,12 +212,13 @@ These are aliases for the same method.
 ### Images
 
 #### List All Images
-    s.Image.all()
+    s.Image.all(per_page=100)
     >>> [<CentOS 5.8 x64 (#1601) CentOS>,
     >>> <CentOS 5.8 x32 (#1602) CentOS>,
     >>> ...........
-    >>> <CentOS 6.5 x64 (#3448641) CentOS>,
-    >>> <Debian 6.0 x64 (#12573) Debian>]
+    >>> <Ghost 0.5 on Ubuntu 14.04 (#5610254) Ubuntu>,
+    >>> <Redmine on Ubuntu 14.04 (#4869208) Ubuntu>,
+    >>> <WordPress on Ubuntu 14.04 (#4991187) Ubuntu>]
 
 #### Get Image by ID, Slug, or Search
     # Get by ID
