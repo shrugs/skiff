@@ -60,8 +60,11 @@ def create(options=None, **kwargs):
 new = create
 
 
-def all():
-    r = skiff.get('/account/keys')
+def all(params=None, **kwargs):
+    if not params:
+        params = kwargs
+
+    r = skiff.get('/account/keys', params)
     if 'message' in r:
         # @TODO: Better error?
         raise ValueError(r['message'])

@@ -19,8 +19,11 @@ class SkiffSize(object):
         return '<%s>' % (self.slug)
 
 
-def all():
-    r = skiff.get('/sizes')
+def all(params=None, **kwargs):
+    if not params:
+        params = kwargs
+
+    r = skiff.get('/sizes', params)
     return [SkiffSize(a) for a in r['sizes']]
 
 

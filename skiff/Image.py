@@ -83,8 +83,11 @@ def get(iid):
         return SkiffImage(r['image'])
 
 
-def all():
-    r = skiff.get('/images')
+def all(params=None, **kwargs):
+    if not params:
+        params = kwargs
+
+    r = skiff.get('/images', params)
     if 'message' in r:
         raise ValueError(r['message'])
     else:

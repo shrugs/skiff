@@ -30,8 +30,10 @@ class SkiffClass(object):
         self.Region.setSkiff(self)
         self.Size.setSkiff(self)
 
-    def get(self, url):
-        r = requests.get(DO_BASE_URL + url, headers=self.DO_HEADERS)
+    def get(self, url, params=None):
+        if not params:
+            params = {}
+        r = requests.get(DO_BASE_URL + url, params=params, headers=self.DO_HEADERS)
         return r.json()
 
     def post(self, url, data=None):

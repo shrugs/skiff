@@ -19,8 +19,11 @@ class SkiffRegion(object):
         return '<%s (%s)>' % (self.name, self.slug)
 
 
-def all():
-    r = skiff.get('/regions')
+def all(params=None, **kwargs):
+    if not params:
+        params = kwargs
+
+    r = skiff.get('/regions', params)
     return [SkiffRegion(a) for a in r['regions']]
 
 

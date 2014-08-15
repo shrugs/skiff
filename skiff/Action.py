@@ -20,8 +20,11 @@ class SkiffAction(object):
         return '<%s (#%s) %s>' % (self.type, self.id, self.status)
 
 
-def all():
-    r = skiff.get('/actions')
+def all(params=None, **kwargs):
+    if not params:
+        params = kwargs
+
+    r = skiff.get('/actions', params)
     return [SkiffAction(a) for a in r['actions']]
 
 

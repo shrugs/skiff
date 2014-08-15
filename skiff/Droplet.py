@@ -220,8 +220,11 @@ def create(options=None, **kwargs):
 new = create
 
 
-def all():
-    r = skiff.get('/droplets')
+def all(params=None, **kwargs):
+    if not params:
+        params = kwargs
+
+    r = skiff.get('/droplets', params)
     if 'message' in r:
         # @TODO: Better error?
         raise ValueError(r['message'])

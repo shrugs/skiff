@@ -91,8 +91,11 @@ class SkiffDomain(object):
             return SkiffDomainRecord(self, r['domain_record'])
 
 
-def all():
-    r = skiff.get('/domains')
+def all(params=None, **kwargs):
+    if not params:
+        params = kwargs
+
+    r = skiff.get('/domains', params)
     return [SkiffDomain(a) for a in r['domains']]
 
 
