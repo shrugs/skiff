@@ -21,8 +21,12 @@ def destroy_droplet(did):
 
 class SkiffDroplet(object):
     """SkiffDroplet"""
-    def __init__(self, options):
+    def __init__(self, options=None, **kwargs):
         super(SkiffDroplet, self).__init__()
+        if not options:
+            options = kwargs
+
+        self._json = options
         # create instance methods for everything in options
         self.__dict__.update(options)
         # droplet snapshots, backups, actions, networks

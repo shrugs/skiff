@@ -34,11 +34,10 @@ def delete_domain(did):
 
 class SkiffDomain(object):
     """SkiffDomain"""
-    def __init__(self, options=None, **kwargs):
+    def __init__(self, options):
         super(SkiffDomain, self).__init__()
-        if not options:
-            options = kwargs
 
+        self._json = options
         self.__dict__.update(options)
         self.record = self.get_record
         self.create = self.create_record

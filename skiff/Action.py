@@ -9,11 +9,10 @@ def setSkiff(s):
 
 class SkiffAction(object):
     """SkiffAction"""
-    def __init__(self, options=None, **kwargs):
+    def __init__(self, options):
         super(SkiffAction, self).__init__()
-        if not options:
-            options = kwargs
 
+        self._json = options
         self.__dict__.update(options)
 
     def __repr__(self):

@@ -13,6 +13,7 @@ class SkiffSize(object):
         if not options:
             options = kwargs
 
+        self._json = options
         self.__dict__.update(options)
 
     def __repr__(self):
