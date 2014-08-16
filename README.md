@@ -23,6 +23,8 @@ Creation calls can be made with keyword args or a single dictionary argument.
 
 Calls to `s.<resource>.all()` can also be passed query parameters. The v2 API currently only responds to `per_page`. If you'd like to avoid paging though request results that contain more than 10 results, set `per_page` to something ludicrous. For example, `s.Image.all(per_page=9001)` will return all of the images. Actual paging functionality is on the roadmap.
 
+Each object has a property `_json`, which contains the json response as a dictionary. If you make local changes to the skiff objects (via `update()` or similar), be sure to refresh the local json with `my_object = my_object.reload()`.
+
 ### Droplets
 
 #### Create
