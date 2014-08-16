@@ -15,6 +15,7 @@ class SkiffRegion(object):
 
         self._json = options
         self.__dict__.update(options)
+        self.refresh = self.reload
 
     def __repr__(self):
         return '<%s (%s)>' % (self.name, self.slug)

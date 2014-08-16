@@ -15,6 +15,7 @@ class SkiffSize(object):
 
         self._json = options
         self.__dict__.update(options)
+        self.refresh = self.reload
 
     def __repr__(self):
         return '<%s>' % (self.slug)

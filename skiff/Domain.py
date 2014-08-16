@@ -16,6 +16,7 @@ class SkiffDomainRecord(object):
         self.__dict__.update(options)
         self.domain = domain
         self.destroy = self.delete
+        self.refresh = self.reload
 
     def __repr__(self):
         return '<%s - %s (#%s) %s -> %s>' % (self.domain.name, self.type, self.id, self.name, self.data)

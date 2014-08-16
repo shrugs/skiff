@@ -16,6 +16,7 @@ class SkiffKey(object):
         self._json = options
         self.__dict__.update(options)
         self.delete = self.destroy
+        self.refresh = self.reload
 
     def __repr__(self):
         return '<%s (#%s)>' % (self.name, self.id or '??')
