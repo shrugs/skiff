@@ -18,6 +18,9 @@ class SkiffAction(object):
     def __repr__(self):
         return '<%s (#%s) %s>' % (self.type, self.id, self.status)
 
+    def reload(self):
+        return get(self.id)
+
 
 def all(params=None, **kwargs):
     if not params:

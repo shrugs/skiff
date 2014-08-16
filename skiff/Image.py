@@ -19,6 +19,9 @@ class SkiffImage(object):
     def __repr__(self):
         return '<%s (#%s) %s>' % (self.name, self.id, self.distribution)
 
+    def reload(self):
+        return get(self.id)
+
     def do_action(self, action, options=None):
         if not options:
             options = {}

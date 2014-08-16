@@ -20,6 +20,9 @@ class SkiffKey(object):
     def __repr__(self):
         return '<%s (#%s)>' % (self.name, self.id or '??')
 
+    def reload(self):
+        return get(self.id)
+
     def update(self, new_name):
         options = {
             'name': new_name

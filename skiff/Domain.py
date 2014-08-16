@@ -27,6 +27,9 @@ class SkiffDomainRecord(object):
         self.name = new_name
         return self.domain.update_record(self.id, new_name)
 
+    def reload(self):
+        return get(self.id)
+
 
 def delete_domain(did):
     return skiff.delete('/domains/%s' % (did))
@@ -45,6 +48,9 @@ class SkiffDomain(object):
 
     def __repr__(self):
         return '<%s>' % (self.name)
+
+    def reload(self):
+        return get(self.name)
 
     def delete(self):
         return delete_domain(self.name)

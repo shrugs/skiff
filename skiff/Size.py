@@ -19,6 +19,9 @@ class SkiffSize(object):
     def __repr__(self):
         return '<%s>' % (self.slug)
 
+    def reload(self):
+        return get(self.slug)
+
 
 def all(params=None, **kwargs):
     if not params:
