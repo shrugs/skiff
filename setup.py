@@ -19,20 +19,12 @@ if sys.argv[-1] == 'publish':
     sys.exit()
 
 tests_require = [
-    'mock',
-    'nose',
-    'coverage',
-    'yanc',
-    'preggy',
-    'tox',
-    'ipdb',
-    'coveralls',
-    'sphinx',
+    'test.py',
 ]
 
 setup(
     name='skiff',
-    version='0.9.3',
+    version='0.9.4',
     description="Python library for DigitalOcean's v2 API",
     long_description='''
 Python library for DigitalOcean's v2 API
