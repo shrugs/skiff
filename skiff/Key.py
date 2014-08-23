@@ -69,10 +69,4 @@ def all(params=None, **kwargs):
     if not params:
         params = kwargs
 
-    r = skiff.get('/account/keys', params)
-    if 'message' in r:
-        # @TODO: Better error?
-        raise ValueError(r['message'])
-    else:
-        # create new account/keys for each droplet
-        return [SkiffKey(d) for d in r['ssh_keys']]
+    return skiff.get('/account/keys', (lambda r: [SkiffKey(d) for d in r['ssh_keys']]), params)

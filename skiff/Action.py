@@ -27,8 +27,7 @@ def all(params=None, **kwargs):
     if not params:
         params = kwargs
 
-    r = skiff.get('/actions', params)
-    return [SkiffAction(a) for a in r['actions']]
+    return skiff.get('/actions', (lambda r: [SkiffAction(a) for a in r['actions']]), params)
 
 
 def get(aid):

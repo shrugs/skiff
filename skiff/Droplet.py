@@ -228,10 +228,4 @@ def all(params=None, **kwargs):
     if not params:
         params = kwargs
 
-    r = skiff.get('/droplets', params)
-    if 'message' in r:
-        # @TODO: Better error?
-        raise ValueError(r['message'])
-    else:
-        # create new Droplets for each droplet
-        return [SkiffDroplet(d) for d in r['droplets']]
+    return skiff.get('/droplets', (lambda r: [SkiffDroplet(d) for d in r['droplets']]), params)

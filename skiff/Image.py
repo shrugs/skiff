@@ -92,8 +92,4 @@ def all(params=None, **kwargs):
     if not params:
         params = kwargs
 
-    r = skiff.get('/images', params)
-    if 'message' in r:
-        raise ValueError(r['message'])
-    else:
-        return [SkiffImage(d) for d in r['images']]
+    return skiff.get('/images', (lambda r: [SkiffImage(d) for d in r['images']]), params)

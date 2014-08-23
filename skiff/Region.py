@@ -28,8 +28,7 @@ def all(params=None, **kwargs):
     if not params:
         params = kwargs
 
-    r = skiff.get('/regions', params)
-    return [SkiffRegion(a) for a in r['regions']]
+    return skiff.get('/regions', (lambda r: [SkiffRegion(a) for a in r['regions']]), params)
 
 
 def get(r):

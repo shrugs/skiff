@@ -101,8 +101,7 @@ def all(params=None, **kwargs):
     if not params:
         params = kwargs
 
-    r = skiff.get('/domains', params)
-    return [SkiffDomain(a) for a in r['domains']]
+    return skiff.get('/domains', (lambda r: [SkiffDomain(a) for a in r['domains']]), params)
 
 
 def create(options=None, **kwargs):

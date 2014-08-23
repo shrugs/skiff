@@ -28,8 +28,7 @@ def all(params=None, **kwargs):
     if not params:
         params = kwargs
 
-    r = skiff.get('/sizes', params)
-    return [SkiffSize(a) for a in r['sizes']]
+    return skiff.get('/sizes', (lambda r: [SkiffSize(a) for a in r['sizes']]), params)
 
 
 def get(s):

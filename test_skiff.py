@@ -51,8 +51,7 @@ class TestDroplet:
 
     def test_all(self, droplet):
         # depends on droplet so I can test length
-        ds = s.Droplet.all()
-        assert len(ds) > 0
+        assert len(s.Droplet.all()) > 0
 
     def test_kernels(self, droplet):
         assert len(droplet.kernels()) > 0
@@ -94,7 +93,12 @@ class TestDomains:
 
 class TestImages:
     def test_all(self):
-        assert len(s.Image.all(per_page=9001)) > 0
+        # assert we get the first page (10 items)
+        assert len(s.Image.all(page=False)) == 10
+        # assert per_page works
+        assert len(s.Image.all(per_page=9001)) > 10
+        # assert that paging works
+        assert len(s.Image.all()) > 10
 
     def test_get(self):
         # test string search
@@ -108,8 +112,8 @@ class TestImages:
         assert slug_img is not None
 
         # assert equality
-        assert (img.id == id_img.id)
-        assert (img.id == slug_img.id)
+        assert img.id == id_img.id
+        assert img.id == slug_img.id
 
     # I'm going to assume the update and delete actions work
 
@@ -122,3 +126,4 @@ class TestRegions:
 class TestSizes:
     def test_all(self):
         assert len(s.Size.all()) > 0
+

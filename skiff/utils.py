@@ -30,11 +30,26 @@ class SkiffClass(object):
         self.Region.setSkiff(self)
         self.Size.setSkiff(self)
 
-    def get(self, url, params=None):
+    def get(self, url, action, params=None):
         if not params:
-            params = {}
-        r = requests.get(DO_BASE_URL + url, params=params, headers=self.DO_HEADERS)
-        return r.json()
+            params = {
+                'page': True
+            }
+
+        collection = []
+        r = requests.get(DO_BASE_URL + url, params=params, headers=self.DO_HEADERS).json()
+
+        if 'message' in r:
+            raise ValueError(r['message'])
+        else:
+            collection.extend(action(r))
+            if 'links' in r and 'pages' in r['links'] and 'next' in r['links']['pages'] and params and params['page']:
+                # should recursively page through results
+                collection.extend(self.page_collection(r['links']['pages']['next'], action))
+
+            return collection
+
+        return None
 
     def post(self, url, data=None):
         if not data:
@@ -53,6 +68,28 @@ class SkiffClass(object):
 
         r = requests.put(DO_BASE_URL + url, data=json.dumps(data), headers=self.DO_HEADERS)
         return r.json()
+
+    def page_collection(self, link, action):
+        """Given a link to a collection of something (Images, Droplets, etc),
+        collect all the items available via the API by paging through it if needed.
+
+        The `action` parameter should be a callable that creates a list from the
+        results of each intermediate API call every item found.
+
+        via https://github.com/fhats
+        """
+        collection = []
+
+        r = requests.get(link, headers=self.DO_HEADERS).json()
+
+        if 'message' in r:
+            raise ValueError(r['message'])
+        else:
+            collection.extend(action(r))
+            if 'links' in r and 'pages' in r['links'] and 'next' in r['links']['pages']:
+                collection.extend(self.page_collection(r['links']['pages']['next'], action))
+
+        return collection
 
 
 def rig(token):
