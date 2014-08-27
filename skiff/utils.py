@@ -30,7 +30,7 @@ class SkiffClass(object):
         self.Region.setSkiff(self)
         self.Size.setSkiff(self)
 
-    def get(self, url, action, params=None):
+    def get(self, url, action=None, params=None):
         if not params:
             params = {
                 'page': True
@@ -42,6 +42,9 @@ class SkiffClass(object):
         if 'message' in r:
             raise ValueError(r['message'])
         else:
+            if not action:
+                return r
+
             collection.extend(action(r))
             if 'links' in r and 'pages' in r['links'] and 'next' in r['links']['pages'] and params and params['page']:
                 # should recursively page through results
