@@ -10,6 +10,9 @@ DEFAULT_RESULTS_PER_PAGE = 20
 token = os.getenv("DO_TOKEN")
 assert token is not None
 
+test_domain = os.getenv("DO_TEST_DOMAIN")
+assert test_domain is not None
+
 s = skiff.rig(token)
 assert s is not None
 
@@ -69,14 +72,14 @@ class TestDroplet:
 
 class TestDomains:
     def test_create(self, droplet):
-        droplet.create_domain("mysuperrandomdomainname.com")
-        assert s.Domain.get("mysuperrandomdomainname.com") is not None
+        droplet.create_domain(test_domain)
+        assert s.Domain.get(test_domain) is not None
 
     def test_all(self):
         assert len(s.Domain.all()) > 0
 
     def test_record_create(self):
-        domain = s.Domain.get("mysuperrandomdomainname.com")
+        domain = s.Domain.get(test_domain)
         record = domain.create_record(type="CNAME", name="*", data="@")
         assert record is not None
         record.update("test")
@@ -84,14 +87,14 @@ class TestDomains:
         assert record.destroy()
 
     def test_records(self):
-        records = s.Domain.get("mysuperrandomdomainname.com").records()
+        records = s.Domain.get(test_domain).records()
         assert len(records) > 0
 
     def test_get(self):
-        assert s.Domain.get("mysuperrandomdomainname.com") is not None
+        assert s.Domain.get(test_domain) is not None
 
     def test_destroy(self, droplet):
-        assert s.Domain.get("mysuperrandomdomainname.com").destroy()
+        assert s.Domain.get(test_domain).destroy()
 
 
 class TestImages:
