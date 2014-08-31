@@ -25,7 +25,7 @@ assert s is not None
 def droplet(request):
     # for simplicity, this requires that you already have an ssh key uploaded
     # mostly because I don't want any emails
-    my_droplet = s.Droplet.create(name="skiff.test", region="nyc1", size="512mb", image=5141286, ssh_keys=[s.Key.all()[0]])
+    my_droplet = s.Droplet.create(name="skiff.test", region="nyc2", size="512mb", image=5141286, ssh_keys=[s.Key.all()[0]])
     my_droplet.wait_till_done()
     my_droplet = my_droplet.reload()
 
