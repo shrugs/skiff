@@ -22,7 +22,7 @@ class SkiffDomainRecord(object):
         return '<%s - %s (#%s) %s -> %s>' % (self.domain.name, self.type, self.id, self.name, self.data)
 
     def delete(self):
-        return self.domain.delete_record(self.id)
+        return self.domain.delete_record(self.domain, self)
 
     def update(self, new_name):
         self.name = new_name
