@@ -3,6 +3,9 @@ import os
 import pytest
 import time
 
+# XXX: according to https://developers.digitalocean.com/#links
+# XXX: the per page default is 25, but from my testing it's actually 20
+DEFAULT_RESULTS_PER_PAGE = 20
 
 token = os.getenv("DO_TOKEN")
 assert token is not None
@@ -93,12 +96,12 @@ class TestDomains:
 
 class TestImages:
     def test_all(self):
-        # assert we get the first page (10 items)
-        assert len(s.Image.all(page=False)) == 10
+        # assert we get the first page (only DEFAULT_RESULTS_PER_PAGE items)
+        assert len(s.Image.all(page=False)) == DEFAULT_RESULTS_PER_PAGE
         # assert per_page works
-        assert len(s.Image.all(per_page=9001)) > 10
+        assert len(s.Image.all(per_page=9001)) > DEFAULT_RESULTS_PER_PAGE
         # assert that paging works
-        assert len(s.Image.all()) > 10
+        assert len(s.Image.all()) > DEFAULT_RESULTS_PER_PAGE
 
     def test_get(self):
         # test string search
