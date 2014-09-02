@@ -323,6 +323,11 @@ Note: Takes a while.
 
     py.test
 
+## Contributors
+
+- [lost-theory](https://github.com/lost-theory)
+- [fhats](https://github.com/fhats)
+
 ## License 
 
 MIT
