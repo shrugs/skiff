@@ -309,6 +309,7 @@ There's probably not much benefit in getting a SkiffRegion instance rather than 
 
 ## Contributors
 
+- [lost-theory](https://github.com/lost-theory)
 - [fhats](https://github.com/fhats)
 
 ## TODO
@@ -322,11 +323,6 @@ run py.test
 Note: Takes a while.
 
     py.test
-
-## Contributors
-
-- [lost-theory](https://github.com/lost-theory)
-- [fhats](https://github.com/fhats)
 
 ## License 
 
