@@ -35,7 +35,7 @@ class SkiffDroplet(object):
         self.image = SkiffImage(options['image'])
         self.size = SkiffSize(options['size'])
         self.kernel = SkiffKernel(options['kernel'])
-        for network_type, networks in options['networks'].iteritems():
+        for network_type, networks in options['networks'].items():
             setattr(self, network_type, [SkiffNetwork(n) for n in networks])
 
         # aliases
@@ -201,7 +201,7 @@ def create(options=None, **kwargs):
     if not options:
         options = kwargs
 
-    for key, val in options.iteritems():
+    for key, val in options.items():
         if key == 'region' and isinstance(val, SkiffRegion):
             options['region'] = val.slug
         elif key == 'size' and isinstance(val, SkiffSize):

@@ -3,9 +3,15 @@ import os
 import pytest
 import time
 
+# XXX: according to https://developers.digitalocean.com/#links
+# XXX: the per page default is 25, but from my testing it's actually 20
+DEFAULT_RESULTS_PER_PAGE = 20
 
 token = os.getenv("DO_TOKEN")
 assert token is not None
+
+test_domain = os.getenv("DO_TEST_DOMAIN")
+assert test_domain is not None
 
 s = skiff.rig(token)
 assert s is not None
@@ -19,7 +25,7 @@ assert s is not None
 def droplet(request):
     # for simplicity, this requires that you already have an ssh key uploaded
     # mostly because I don't want any emails
-    my_droplet = s.Droplet.create(name="skiff.test", region="nyc1", size="512mb", image=5141286, ssh_keys=[s.Key.all()[0]])
+    my_droplet = s.Droplet.create(name="skiff.test", region="nyc2", size="512mb", image=5141286, ssh_keys=[s.Key.all()[0]])
     my_droplet.wait_till_done()
     my_droplet = my_droplet.reload()
 
@@ -66,14 +72,14 @@ class TestDroplet:
 
 class TestDomains:
     def test_create(self, droplet):
-        droplet.create_domain("mysuperrandomdomainname.com")
-        assert s.Domain.get("mysuperrandomdomainname.com") is not None
+        droplet.create_domain(test_domain)
+        assert s.Domain.get(test_domain) is not None
 
     def test_all(self):
         assert len(s.Domain.all()) > 0
 
     def test_record_create(self):
-        domain = s.Domain.get("mysuperrandomdomainname.com")
+        domain = s.Domain.get(test_domain)
         record = domain.create_record(type="CNAME", name="*", data="@")
         assert record is not None
         record.update("test")
@@ -81,24 +87,24 @@ class TestDomains:
         assert record.destroy()
 
     def test_records(self):
-        records = s.Domain.get("mysuperrandomdomainname.com").records()
+        records = s.Domain.get(test_domain).records()
         assert len(records) > 0
 
     def test_get(self):
-        assert s.Domain.get("mysuperrandomdomainname.com") is not None
+        assert s.Domain.get(test_domain) is not None
 
     def test_destroy(self, droplet):
-        assert s.Domain.get("mysuperrandomdomainname.com").destroy()
+        assert s.Domain.get(test_domain).destroy()
 
 
 class TestImages:
     def test_all(self):
-        # assert we get the first page (10 items)
-        assert len(s.Image.all(page=False)) == 10
+        # assert we get the first page (only DEFAULT_RESULTS_PER_PAGE items)
+        assert len(s.Image.all(page=False)) == DEFAULT_RESULTS_PER_PAGE
         # assert per_page works
-        assert len(s.Image.all(per_page=9001)) > 10
+        assert len(s.Image.all(per_page=9001)) > DEFAULT_RESULTS_PER_PAGE
         # assert that paging works
-        assert len(s.Image.all()) > 10
+        assert len(s.Image.all()) > DEFAULT_RESULTS_PER_PAGE
 
     def test_get(self):
         # test string search

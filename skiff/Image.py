@@ -76,17 +76,18 @@ class SkiffImage(object):
 
 def get(iid):
     # same endpoint works with ids and slugs
-    r = skiff.get('/images/%s' % (iid))
-    if 'message' in r:
-        # could not find, try basic search
-        images = all()
-        for img in images:
-            if iid in img.name:
-                return img
-        raise ValueError(r['message'])
-    else:
+    try:
+        r = skiff.get('/images/%s' % (iid))
         return SkiffImage(r['image'])
+    except ValueError:
+        pass
 
+    # could not find, try basic search (shortest matching name wins)
+    images = sorted(all(), key=lambda img: len(img.name))
+    for img in images:
+        if iid in img.name:
+            return img
+    raise ValueError('Could not find an image named {!r}'.format(iid))
 
 def all(params=None, **kwargs):
     if not params:
