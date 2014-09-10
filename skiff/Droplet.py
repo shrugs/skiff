@@ -188,7 +188,6 @@ def get(did):
             return SkiffDroplet(r['droplet'])
     else:
         # is droplet name, search
-        # @TODO: use fuzzy search or something more intelligent
         ds = all()
         for d in ds:
             if did in d.name:
