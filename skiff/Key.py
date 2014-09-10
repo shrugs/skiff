@@ -38,16 +38,16 @@ class SkiffKey(object):
 
 
 def get(kid):
-    r = skiff.get('/account/keys/%s' % (kid))
-    if 'message' in r:
+    try:
+        r = skiff.get('/account/keys/%s' % (kid))
+        return SkiffKey(r['ssh_key'])
+    except ValueError, e:
         # try searching
         keys = all()
         for key in keys:
             if kid in key.name:
                 return key
-        raise ValueError(r['message'])
-    else:
-        return SkiffKey(r['ssh_key'])
+        raise e
 
 
 def create(options=None, **kwargs):
