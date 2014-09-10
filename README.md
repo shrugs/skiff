@@ -1,6 +1,6 @@
 # Skiff
 
-Wrapper for DigitalOcean's v2 API
+Python Wrapper for DigitalOcean's v2 API
 
 <img src="https://raw.githubusercontent.com/Shrugs/skiff/master/media/SkiffLogo.png" width=200>
 
