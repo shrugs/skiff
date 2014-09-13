@@ -151,6 +151,9 @@ class SkiffDroplet(object):
     def enable_private_networking(self):
         return self.do_action('enable_private_networking')
 
+    def snapshot(self, name):
+        return self.do_action('snapshot', {'name': name})
+
     def get_action(self, action_id):
         r = skiff.get('/droplets/%s/actions/%s' % (self.id, action_id))
         if 'message' in r:
