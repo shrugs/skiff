@@ -101,6 +101,11 @@ Alternatively, simply pass the kernel's ID.
 #### Enable IPv6
     my_droplet.enable_ipv6()
 
+#### Create Snapshot
+_Note: Droplet must be powered off before you perform this._
+
+    my_droplet.snapshot()
+
 #### Disable Backups
     my_droplet.disable_backups()
 
