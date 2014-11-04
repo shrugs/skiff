@@ -33,7 +33,7 @@ class SkiffDroplet(object):
         # @TODO: make this cleaner?
         self.region = SkiffRegion(options['region'])
         self.image = SkiffImage(options['image'])
-        self.size = SkiffSize(options['size'])
+        self.size = SkiffSize(size=options['size_slug'])
         self.kernel = SkiffKernel(options['kernel'])
         for network_type, networks in options['networks'].items():
             setattr(self, network_type, [SkiffNetwork(n) for n in networks])
