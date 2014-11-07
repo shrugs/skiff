@@ -46,7 +46,7 @@ class SkiffClass(object):
                 return r
 
             collection.extend(action(r))
-            if 'links' in r and 'pages' in r['links'] and 'next' in r['links']['pages'] and params and params['page']:
+            if ('links' in r) and ('pages' in r['links']) and ('next' in r['links']['pages']) and (params) and ('page' in params) and (params['page']):
                 # should recursively page through results
                 collection.extend(self.page_collection(r['links']['pages']['next'], action))
 
