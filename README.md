@@ -26,7 +26,7 @@ Python Wrapper for DigitalOcean's v2 API
 
 Creation calls can be made with keyword args or a single dictionary argument.
 
-Calls to `s.<resource>.all()` can also be passed query parameters. The v2 API currently only responds to `per_page`. For example, `s.Image.all(per_page=200)` will return all of the images up to the 9001th. By default, `s.<resource>.all()` will page through all responses. Pass `page=False` to stop skiff from automatically retriving all of the possible values.
+Calls to `s.<resource>.all()` can also be passed query parameters. The v2 API currently responds to `per_page`. For example, `s.Image.all(per_page=200)` will return all of the images up to the 200th (200 is max). By default, `s.<resource>.all()` will page through all responses. Pass `page=False` to stop skiff from automatically retriving all of the possible values.
 
 Each object has a property `_json`, which contains the json response as a dictionary. If you make local changes to the skiff objects (via `update()` or similar), be sure to refresh the local json with `my_object = my_object.reload()`.
 
