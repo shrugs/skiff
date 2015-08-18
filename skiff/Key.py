@@ -41,7 +41,7 @@ def get(kid):
     try:
         r = skiff.get('/account/keys/%s' % (kid))
         return SkiffKey(r['ssh_key'])
-    except ValueError, e:
+    except ValueError as e:
         # try searching
         keys = all()
         for key in keys:
