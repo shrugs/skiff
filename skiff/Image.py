@@ -79,7 +79,7 @@ def get(iid):
     try:
         r = skiff.get('/images/%s' % (iid))
         return SkiffImage(r['image'])
-    except ValueError, e:
+    except ValueError as e:
         # could not find, try basic search (shortest matching name wins)
         images = sorted(all(), key=lambda img: len(img.name))
         for img in images:
