@@ -8,7 +8,7 @@ Python Wrapper for DigitalOcean's v2 API
 
 <img src="https://raw.githubusercontent.com/Shrugs/skiff/master/media/SkiffLogo.png" width=200>
 
-This project is not actively maintained in sync with v2 API changes; if something changes (and therefore breaks the library), open an issue and I will fix it as soon as possible.
+This project is not actively maintained in sync with v2 API changes; if something changes (and therefore breaks the library), open an issue, please.
 
 ## Installation
 
