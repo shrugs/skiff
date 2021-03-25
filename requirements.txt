@@ -1,6 +1,6 @@
 Jinja2==2.7.3
 MarkupSafe==0.23
-PyYAML==3.11
+PyYAML==5.4
 Pygments==1.6
 Sphinx==1.2.2
 Unidecode==0.04.16
