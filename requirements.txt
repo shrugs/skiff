@@ -14,7 +14,7 @@ ipython==2.1.0
 mock==1.0.1
 nose==1.3.3
 preggy==1.1.1
-py==1.4.20
+py==1.10.0
 requests==2.3.0
 six==1.7.3
 -e git+git@github.com:Shrugs/skiff.git@cff03a2be0d0db6955ca89de8f9667d0fea167d6#egg=skiff-master
